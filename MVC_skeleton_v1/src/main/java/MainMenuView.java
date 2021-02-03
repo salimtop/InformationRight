@@ -8,16 +8,15 @@ class MainMenuView implements ViewInterface {
 		Integer choice;
 		do {
 			System.out.println("1. New Application");
-			System.out.println("2. Application Inquery");
-			System.out.println("3. Personnel Login");
+			System.out.println("2. Application Inquiry");
+			System.out.println("3. Personnel Login1");
 			System.out.println("5. Tarık");
 			System.out.println("4. Quit");
-			System.out.println("4. Deneme");
 			System.out.println();
 
 			choice = getInteger("Enter your choice : ", false);
 		} 
-		while (choice == null || choice < 1 || choice > 6);
+		while (choice == null || choice < 1 || choice > 4);
 		
 		
 		Map<String, Object> userInput = new HashMap<>();
