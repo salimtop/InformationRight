@@ -1,23 +1,23 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LoginModel implements ModelInterface {
+public class ScreenModel implements ModelInterface {
 
+    public ScreenModel() {
+    }
 
     @Override
     public ResultSet select(Map<String, Object> whereParameters) throws Exception {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append("	Username, Password,Name,Surname, Title,InstitutionName, U.PersonalId, LastLogin  ");
-        sql.append(" FROM UserInformation AS U "+
-                    "INNER JOIN Personal AS P "+
-                    "ON U.PersonalId = P.PersonalId "+
-                    "INNER JOIN Institution AS I " +
-                    "ON P.Department = I.InstitutionId ");
+        sql.append("	ScreenType ");
+        sql.append(" FROM Authority AS A INNER JOIN Screen AS S " +
+                "ON A.ScreenNum = S.ScreenNum ");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
@@ -48,4 +48,6 @@ public class LoginModel implements ModelInterface {
     public int delete(Map<String, Object> whereParameters) throws Exception {
         return 0;
     }
+
+
 }
