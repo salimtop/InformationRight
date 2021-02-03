@@ -11,8 +11,10 @@ public class ModelViewControllerConsole {
 		// Model View Controller (MVC)
 		// Router knows all the controllers
 		Map<String, Controller> router = new HashMap<>();
+
 		router.put("MainMenu", new Controller(new MainMenuView(), new NopModel()));
 		router.put("Department", new Controller(new DepartmentView(), new DepartmentModel()));
+		router.put("Login", new Controller(new LoginView(), new LoginModel()));
 
 		ViewData viewData = new ViewData("MainMenu", "");		
 		do {
@@ -20,13 +22,13 @@ public class ModelViewControllerConsole {
 			Controller controller = router.get(viewData.functionName);
 			ModelData modelData = controller.executeModel(viewData);
 			viewData = controller.getView(modelData, viewData.functionName, viewData.operationName);
-			
+
 			System.out.println();
 			System.out.println("-------------------------------------------------");
 			System.out.println();
 		}
 		while (viewData.functionName != null);
-		
+
 		System.out.println();
 		System.out.println();
 		System.out.println("Program is ended...");
@@ -39,7 +41,7 @@ public class ModelViewControllerConsole {
 	
 	public static void connectToDatabase() {
 		DatabaseUtilities.host = "localhost:63664";
-		DatabaseUtilities.databaseName = "AdventureWorks2019";
+		DatabaseUtilities.databaseName = "Group1";
 		
 		try {
 			DatabaseUtilities.getConnection();
