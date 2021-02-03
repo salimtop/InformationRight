@@ -10,7 +10,7 @@ public class ModelViewControllerConsole {
 		
 		// Model View Controller (MVC)
 		// Router knows all the controllers
-		Map<String, Controller> router = new HashMap<>();		
+		Map<String, Controller> router = new HashMap<>();
 		router.put("MainMenu", new Controller(new MainMenuView(), new NopModel()));
 		router.put("Department", new Controller(new DepartmentView(), new DepartmentModel()));
 
