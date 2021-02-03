@@ -7,10 +7,12 @@ class MainMenuView implements ViewInterface {
 
 		Integer choice;
 		do {
-			System.out.println("1. New Application");
-			System.out.println("2. Application Inquiry");
-			System.out.println("3. Personnel Login");
-			System.out.println("4. Quit");
+			System.out.println("1. Show all departments");
+			System.out.println("2. Show departments");
+			System.out.println("3. Add a department");
+			System.out.println("4. Update a department");
+			System.out.println("5. Delete a department");
+			System.out.println("6. Quit");
 			System.out.println();
 
 			choice = getInteger("Enter your choice : ", false);

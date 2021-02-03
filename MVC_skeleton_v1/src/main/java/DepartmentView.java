@@ -12,15 +12,14 @@ class DepartmentView implements ViewInterface {
 	public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
 		
 		switch(operationName) {
-			case "select": return selectOperation(modelData);
-			case "insert": return insertOperation(modelData);
-			case "update": return updateOperation(modelData);
-			case "delete": return deleteOperation(modelData);
-
-			case "select.gui": return selectGUI(modelData);
-			case "insert.gui": return insertGUI(modelData);
-			case "update.gui": return updateGUI(modelData);
-			case "delete.gui": return deleteGUI(modelData);
+		case "select": return selectOperation(modelData);	
+		case "insert": return insertOperation(modelData);	
+		case "update": return updateOperation(modelData);	
+		case "delete": return deleteOperation(modelData);	
+		case "select.gui": return selectGUI(modelData);
+		case "insert.gui": return insertGUI(modelData);
+		case "update.gui": return updateGUI(modelData);
+		case "delete.gui": return deleteGUI(modelData);
 		}
 		
 		return new ViewData("MainMenu", "");

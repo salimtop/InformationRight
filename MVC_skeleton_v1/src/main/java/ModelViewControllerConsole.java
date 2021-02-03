@@ -38,7 +38,7 @@ public class ModelViewControllerConsole {
 
 	
 	public static void connectToDatabase() {
-		DatabaseUtilities.host = "localhost:63664";
+		DatabaseUtilities.host = "localhost:50674";
 		DatabaseUtilities.databaseName = "AdventureWorks2019";
 		
 		try {
