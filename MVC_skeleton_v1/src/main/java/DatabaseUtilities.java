@@ -7,6 +7,7 @@ class DatabaseUtilities {
 	private static Connection connection = null;
 	public static String host;
 	public static String databaseName;
+	public static boolean monitoring = true;
 	
 	private DatabaseUtilities() {
 		

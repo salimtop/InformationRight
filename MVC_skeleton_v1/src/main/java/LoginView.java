@@ -49,7 +49,7 @@ public class LoginView implements ViewInterface{
                     resultSet.close();
 
                     //singleton class
-                    new Login(username, name, surname, personalId);
+                    Login.instance(username, name, surname, personalId);
                     return new ViewData("Screen", "loadScreen");
                 }
 
@@ -78,7 +78,7 @@ public class LoginView implements ViewInterface{
 
 
     private ViewData loginGUI(ModelData modelData) throws Exception {
-        System.out.println("\nLogin");
+        System.out.println("Login");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("whereParameters", getWhereParameters());
 

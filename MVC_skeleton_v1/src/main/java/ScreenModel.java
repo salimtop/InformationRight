@@ -22,7 +22,8 @@ public class ScreenModel implements ModelInterface {
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
 
-        System.out.println(sql.toString() + "\n");
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sql.toString() + "\n");
 
 
         // execute constructed SQL statement

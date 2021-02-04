@@ -20,9 +20,12 @@ public class ScreenView implements ViewInterface {
     }
 
     private ViewData loadScreen(ModelData modelData) throws Exception {
+
         String username =  Login.getUsername();
         Map<String, Object> whereParameters = new HashMap<>();
         whereParameters.put("whereParameters",getWhereParameters());
+
+        System.out.println("Redirecting to personnel panel...");
 
         return new ViewData("Screen", "select",whereParameters);
 
