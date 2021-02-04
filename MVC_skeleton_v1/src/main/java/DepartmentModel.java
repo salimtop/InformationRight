@@ -5,7 +5,10 @@ import java.util.*;
 class DepartmentModel implements ModelInterface {
 	
 	@Override
-	public ResultSet select(Map<String, Object> whereParameters) throws Exception {
+	public ResultSet select(Map<String, Object> viewParameters) throws Exception {
+
+		Map<String, Object> whereParameters = (Map<String, Object>)(viewParameters.get("whereParameters"));
+
 		// construct SQL statement
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
@@ -14,7 +17,7 @@ class DepartmentModel implements ModelInterface {
 
 		List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);		
 		sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
-		
+
 		sql.append("ORDER BY DepartmentID");		
 		//System.out.println(sql.toString() + "\n");
 

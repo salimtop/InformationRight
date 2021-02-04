@@ -1,5 +1,6 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +14,19 @@ public class ScreenView implements ViewInterface {
             case "screen.gui": return screenMenu(modelData);
             case "loadScreen" : return loadScreen(modelData);
             case "select": return getScreen(modelData);
+
+            //Database screens
+            case "newApplication" : return new ViewData("Application","newApplication");
+            case "listApplication" : return new ViewData("Application","listApplication");
+            case "listAllApplication" : return new ViewData("Application","listAllApplication");
+
         }
 
 
         return null;
+    }
+
+    private void newApplicationGUI() {
     }
 
     private ViewData loadScreen(ModelData modelData) throws Exception {
@@ -54,7 +64,7 @@ public class ScreenView implements ViewInterface {
     }
 
 
-    private ViewData screenMenu(ModelData modelData) {
+    private ViewData screenMenu(ModelData modelData) throws ParseException {
         HashMap<Integer,String> screen = Login.getScreen();
 
         if(screen == null) {
@@ -63,9 +73,16 @@ public class ScreenView implements ViewInterface {
         }
 
         for(int i = 1; i <= screen.size(); i++)
-            System.out.println(""+i+" "+screen.get(i));
+            System.out.println(""+i+" "+Screen.getByColumnName(screen.get(i)));
 
-        return new ViewData("MainMenu", "");
+        Integer choice;
+        do{
+            choice = getInteger("Enter choice:",false);
+        }
+        while(choice < 0 || choice > screen.size());
+
+
+        return new ViewData("Screen", screen.get(choice));
     }
 
     Map<String, Object> getWhereParameters() throws Exception {

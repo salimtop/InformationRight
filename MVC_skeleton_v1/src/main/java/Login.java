@@ -9,6 +9,7 @@ public class Login {
     private String name;
     private String surname;
     private Integer personalId;
+    private Integer institutionId;
     private HashMap<Integer,String> screen;
 
     private static Object lock = new Object();
@@ -18,7 +19,7 @@ public class Login {
 
    }
 
-    public static Login instance(String username, String name, String surname, Integer personalId) {
+    public static Login instance(String username, String name, String surname, Integer personalId,Integer institutionId) {
         if (instance == null) {
             // Double checked locking
             synchronized (lock) {
@@ -28,7 +29,7 @@ public class Login {
                     instance.name = name;
                     instance.surname = surname;
                     instance.personalId = personalId;
-
+                    instance.institutionId = institutionId;
 
                 }
             }
@@ -49,6 +50,8 @@ public class Login {
     public static String getUsername() {
         return instance.username;
     }
+
+    public static Integer getInstitutionId() { return instance.institutionId; }
 
     public static void setScreen(HashMap<Integer, String> screen) {
 

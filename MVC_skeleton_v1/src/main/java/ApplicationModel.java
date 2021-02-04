@@ -4,9 +4,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
-public class LoginModel implements ModelInterface {
-
-
+public class ApplicationModel implements ModelInterface{
     @Override
     public ResultSet select(Map<String, Object> viewParameters) throws Exception {
 
@@ -15,15 +13,17 @@ public class LoginModel implements ModelInterface {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append("	Username, Password,Name,Surname, Title,InstitutionName,InstitutionId, U.PersonalId, LastLogin  ");
-        sql.append(" FROM UserInformation AS U "+
-                    "INNER JOIN Personal AS P "+
-                    "ON U.PersonalId = P.PersonalId "+
-                    "INNER JOIN Institution AS I " +
-                    "ON P.Department = I.InstitutionId ");
+        sql.append("	AD.ApplicationNumber, S.Status, MandatoryFlag, ExpireDate , ApplicationDate ");
+        sql.append(" FROM Admission AS AD INNER JOIN Application AS AP " +
+                "ON AD.ApplicationNumber = AP.ApplicationNumber "+
+                "INNER JOIN Status AS S " +
+                "ON AP.Status = S.StatusNumber ");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
+
+        if(viewParameters.containsKey("ORDER BY"))
+            sql.append("ORDER BY "+ viewParameters.get("ORDER BY"));
 
         if(DatabaseUtilities.monitoring)
             System.out.println(sql.toString() + "\n");

@@ -16,6 +16,7 @@ public class ModelViewControllerConsole {
 		router.put("Department", new Controller(new DepartmentView(), new DepartmentModel()));
 		router.put("Login", new Controller(new LoginView(), new LoginModel()));
 		router.put("Screen",new Controller(new ScreenView(), new ScreenModel() ));
+		router.put("Application",new Controller(new ApplicationView(),new ApplicationModel()));
 
 		ViewData viewData = new ViewData("MainMenu", "");		
 		do {

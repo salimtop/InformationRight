@@ -37,6 +37,7 @@ public class LoginView implements ViewInterface{
                 String surname = resultSet.getString("surname");
                 String title = resultSet.getString("title");
                 String department = resultSet.getString("InstitutionName");
+                Integer departmentId = resultSet.getInt("InstitutionId");
                 Date lastLogin = resultSet.getDate("LastLogin");
                 Integer personalId = resultSet.getInt("PersonalId");
 
@@ -49,7 +50,7 @@ public class LoginView implements ViewInterface{
                     resultSet.close();
 
                     //singleton class
-                    Login.instance(username, name, surname, personalId);
+                    Login.instance(username, name, surname, personalId,departmentId);
                     return new ViewData("Screen", "loadScreen");
                 }
 

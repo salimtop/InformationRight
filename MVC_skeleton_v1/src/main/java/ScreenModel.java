@@ -11,7 +11,10 @@ public class ScreenModel implements ModelInterface {
     }
 
     @Override
-    public ResultSet select(Map<String, Object> whereParameters) throws Exception {
+    public ResultSet select(Map<String, Object> viewParameters) throws Exception {
+
+        Map<String, Object> whereParameters = (Map<String, Object>)(viewParameters.get("whereParameters"));
+
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");

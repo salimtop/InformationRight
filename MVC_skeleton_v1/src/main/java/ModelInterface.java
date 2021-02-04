@@ -4,7 +4,7 @@ import java.util.*;
 
 interface ModelInterface {
 
-	abstract ResultSet select(Map<String, Object> whereParameters) throws Exception;
+	abstract ResultSet select(Map<String, Object> parameters) throws Exception;
 	
 	abstract int insert(String fieldNames, List<Object> rows) throws Exception;
 		
@@ -20,9 +20,7 @@ interface ModelInterface {
 		switch(viewData.operationName) {
 			case "select":
 			{
-				Map<String, Object> whereParameters = (Map<String, Object>)(viewData.viewParameters.get("whereParameters"));
-				
-				ResultSet resultSet = select(whereParameters);
+				ResultSet resultSet = select(viewData.viewParameters);
 				
 				return new ModelData(viewData.functionName, resultSet);
 			}
