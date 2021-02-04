@@ -47,6 +47,12 @@ public class Login {
     }
 
 
+    public static boolean active(){
+       if(instance == null)
+           return false;
+       return true;
+    }
+
     public static String getUsername() {
         return instance.username;
     }

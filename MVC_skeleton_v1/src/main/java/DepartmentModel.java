@@ -30,11 +30,10 @@ class DepartmentModel implements ModelInterface {
 		
 		return result;
 	}
-		
+
 	@Override
-	public int insert(String fieldNames, List<Object> rows) throws Exception
-	{
-		// construct SQL statement
+	public int insert(Map<String, Object> insertParameters) throws Exception {
+	/*		// construct SQL statement
 		StringBuilder sql = new StringBuilder();
 		sql.append(" INSERT INTO HumanResources.Department (" + fieldNames + ") " );
 		sql.append(" VALUES ");
@@ -74,7 +73,8 @@ class DepartmentModel implements ModelInterface {
 			preparedStatement.close();
 		}
 		
-		return rowCount;
+		return rowCount;*/
+		return 0;
 	}
 	
 	@Override

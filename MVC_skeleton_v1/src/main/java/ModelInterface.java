@@ -4,10 +4,10 @@ import java.util.*;
 
 interface ModelInterface {
 
-	abstract ResultSet select(Map<String, Object> parameters) throws Exception;
+	abstract ResultSet select(Map<String, Object> viewParameters) throws Exception;
 	
-	abstract int insert(String fieldNames, List<Object> rows) throws Exception;
-		
+	abstract int insert(Map<String,Object> insertParameters) throws Exception;
+
 	abstract int update(Map<String,Object> updateParameters, Map<String,Object> whereParameters) throws Exception;
 
 	abstract int delete(Map<String,Object> whereParameters) throws Exception;
@@ -26,10 +26,8 @@ interface ModelInterface {
 			}
 			case "insert":
 			{
-				String fieldNames = (String)(viewData.viewParameters.get("fieldNames"));
-				List<Object> rows = (List<Object>)(viewData.viewParameters.get("rows"));
-				
-				int recordCount = insert(fieldNames, rows);
+
+				int recordCount = insert(viewData.viewParameters);
 				
 				return new ModelData(viewData.functionName, recordCount);
 			}

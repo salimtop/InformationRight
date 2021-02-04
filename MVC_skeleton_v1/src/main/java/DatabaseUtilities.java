@@ -87,6 +87,9 @@ class DatabaseUtilities {
 	}
 
 	public static String formatField(Object value) {
+		if(value == null)
+			return "NULL";
+
 		if (value instanceof String) {
 			return "'" + value + "'"; 
 		}

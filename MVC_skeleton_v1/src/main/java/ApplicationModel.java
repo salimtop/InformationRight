@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,9 +40,104 @@ public class ApplicationModel implements ModelInterface{
     }
 
     @Override
-    public int insert(String fieldNames, List<Object> rows) throws Exception {
-        return 0;
+    public int insert(Map<String, Object> insertParameters) throws Exception {
+
+        String applicationFieldName = (String)insertParameters.get("ApplicationFieldName");
+        String applicationFormFieldName = (String)insertParameters.get("ApplicationFormFieldName");
+        String applierFieldName = (String)insertParameters.get("ApplierFieldName");
+
+        //get table objects
+        Applier applier = (Applier)insertParameters.get("Applier");
+        Application application = (Application)insertParameters.get("Application");
+        ApplicationForm applicationForm = (ApplicationForm)insertParameters.get("ApplicationForm");
+
+        // construct Application SQL statement
+        StringBuilder sqlApplication = new StringBuilder();
+        sqlApplication.append(" INSERT INTO Application (" + applicationFieldName + ") " );
+        sqlApplication.append(" VALUES ");
+
+        String[] fieldList = applicationFieldName.split(",");
+
+        sqlApplication.append("(");
+        for (int j=0; j<fieldList.length; j++) {
+            String fieldName = fieldList[j].trim();
+            sqlApplication.append(DatabaseUtilities.formatField(application.getByName(fieldName)));
+            if (j < fieldList.length - 1) {
+                sqlApplication.append(", ");
+            }
+        }
+        sqlApplication.append(")");
+
+        sqlApplication.append(" SELECT SCOPE_IDENTITY() AS LastID");
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sqlApplication.toString());
+
+        //Insert Application and get an ID
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlApplication.toString());
+        ResultSet result = preparedStatement.executeQuery();
+        int lastID = result.getInt("LastID");
+        preparedStatement.close();
+
+        applier.setApplicationNumber(lastID);
+        applicationForm.setApplicationNumber(lastID);
+
+
+
+        // construct ApplicationForm SQL statement
+        StringBuilder sqlApplicationForm = new StringBuilder();
+        sqlApplicationForm.append(" INSERT INTO ApplicationForm (" + applicationFieldName + ") " );
+        sqlApplicationForm.append(" VALUES ");
+
+        fieldList = applicationFieldName.split(",");
+
+        sqlApplicationForm.append("(");
+        for (int j=0; j<fieldList.length; j++) {
+            String fieldName = fieldList[j].trim();
+            sqlApplicationForm.append(DatabaseUtilities.formatField(applicationForm.getByName(fieldName)));
+            if (j < fieldList.length - 1) {
+                sqlApplicationForm.append(", ");
+            }
+        }
+        sqlApplicationForm.append(")");
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sqlApplicationForm.toString());
+
+        // construct Applier SQL statement
+        StringBuilder sqlApplier = new StringBuilder();
+        sqlApplier.append(" INSERT INTO ApplicationForm (" + applicationFieldName + ") " );
+        sqlApplier.append(" VALUES ");
+
+        fieldList = applierFieldName.split(",");
+
+        sqlApplier.append("(");
+        for (int j=0; j<fieldList.length; j++) {
+            String fieldName = fieldList[j].trim();
+            sqlApplier.append(DatabaseUtilities.formatField(applier.getByName(fieldName)));
+            if (j < fieldList.length - 1) {
+                sqlApplier.append(", ");
+            }
+        }
+        sqlApplier.append(")");
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sqlApplier.toString());
+
+
+        // execute constructed SQL statement
+
+        connection = DatabaseUtilities.getConnection();
+        preparedStatement = connection.prepareStatement(sqlApplication.toString());
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+
+        return lastID;
     }
+
+
 
     @Override
     public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {

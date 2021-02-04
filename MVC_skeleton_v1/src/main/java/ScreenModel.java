@@ -39,7 +39,7 @@ public class ScreenModel implements ModelInterface {
     }
 
     @Override
-    public int insert(String fieldNames, List<Object> rows) throws Exception {
+    public int insert(Map<String, Object> insertParameters) throws Exception {
         return 0;
     }
 

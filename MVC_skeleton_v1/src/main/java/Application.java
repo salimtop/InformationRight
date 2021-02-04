@@ -1,6 +1,52 @@
+import java.util.Date;
+
 public class Application {
 
 
+    Integer applicationNumber;
+    Integer status;
+    Boolean	mandatory;
+    Integer admissionDeliveryType;
+    String applicationDate;
+    String expireDate;
+    Integer paymentNumber;
+    String paymentExpire;
+    Integer relatedApplication;
+
+
+    public Application(Integer applicationNumber, Integer status, boolean mandatory, Integer admissionDeliveryType, String applicationDate, String expireDate, Integer paymentNumber, String paymentExpire, Integer relatedApplication) {
+        this.applicationNumber = applicationNumber;
+        this.status = status;
+        this.mandatory = mandatory;
+        this.admissionDeliveryType = admissionDeliveryType;
+        this.applicationDate = applicationDate;
+        this.expireDate = expireDate;
+        this.paymentNumber = paymentNumber;
+        this.paymentExpire = paymentExpire;
+        this.relatedApplication = relatedApplication;
+    }
+
+    public Object getByName(String attributeName) {
+        switch (attributeName) {
+            case "ApplicationNumber": return applicationNumber;
+            case "status": return status;
+            case "mandatory": return mandatory;
+            case "admissionDeliveryType": return admissionDeliveryType;
+            case "applicationDate": return applicationDate;
+            case "expireDate": return expireDate;
+            case "paymentNumber": return paymentNumber;
+            case "paymentExpire": return paymentExpire;
+            case "relatedApplication": return relatedApplication;
+
+            default: return null;
+        }
+    }
+
+    public static String getFieldNames(){
+
+        return "  status, mandatory, admissionDeliveryType, applicationDate, expireDate, "+
+                " paymentNumber, paymentExpire, relatedApplication ";
+    }
     public static String getOrderColumn(Integer attribute) throws Exception {
 
         switch(attribute){
@@ -24,5 +70,9 @@ public class Application {
         System.out.println("4 - Application Date");
         System.out.println("5 - Application Expire Date");
 
+    }
+
+    public void setApplicationNumber(Integer applicationNumber) {
+        this.applicationNumber = applicationNumber;
     }
 }

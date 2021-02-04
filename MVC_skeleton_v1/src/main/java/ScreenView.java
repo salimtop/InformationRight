@@ -10,6 +10,7 @@ public class ScreenView implements ViewInterface {
     @Override
     public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
 
+
         switch(operationName){
             case "screen.gui": return screenMenu(modelData);
             case "loadScreen" : return loadScreen(modelData);
@@ -23,7 +24,7 @@ public class ScreenView implements ViewInterface {
         }
 
 
-        return null;
+        return new ViewData(null,null);
     }
 
     private void newApplicationGUI() {
@@ -71,15 +72,17 @@ public class ScreenView implements ViewInterface {
             System.out.println("Authentication error! ");
             return new ViewData("Login", "loadScreen");
         }
-
-        for(int i = 1; i <= screen.size(); i++)
+        int i;
+        for(i = 1; i <= screen.size(); i++)
             System.out.println(""+i+" "+Screen.getByColumnName(screen.get(i)));
+        System.out.println(""+i+" "+" Quit");
+        screen.put(i," Quit");
 
         Integer choice;
         do{
             choice = getInteger("Enter choice:",false);
         }
-        while(choice < 0 || choice > screen.size());
+        while(choice < 0 || choice > screen.size()+1);
 
 
         return new ViewData("Screen", screen.get(choice));
