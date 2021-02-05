@@ -11,7 +11,7 @@ class DepartmentView implements ViewInterface {
 	@Override
 	public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
 		
-		switch(operationName) {
+		/*switch(operationName) {
 		case "select": return selectOperation(modelData);	
 		case "insert": return insertOperation(modelData);	
 		case "update": return updateOperation(modelData);	
@@ -21,11 +21,11 @@ class DepartmentView implements ViewInterface {
 		case "update.gui": return updateGUI(modelData);
 		case "delete.gui": return deleteGUI(modelData);
 		}
-		
+		*/
 		return new ViewData("MainMenu", "");
 	}
 	
-	ViewData selectOperation(ModelData modelData) throws Exception {
+	/*ViewData selectOperation(ModelData modelData) throws Exception {
 		ResultSet resultSet = modelData.resultSet;
 		
 		if (resultSet != null) {
@@ -65,7 +65,7 @@ class DepartmentView implements ViewInterface {
 		
 		return new ViewData("MainMenu", "");
 	}	
-	
+	*/
 	Map<String, Object> getWhereParameters() throws Exception {
 		System.out.println("Filter conditions:");
 		Integer departmentID = getInteger("Department ID : ", true);

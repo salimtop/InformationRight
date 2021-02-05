@@ -18,6 +18,8 @@ public class ModelViewControllerConsole {
 		router.put("Screen",new Controller(new ScreenView(), new ScreenModel() ));
 		router.put("Application",new Controller(new ApplicationView(),new ApplicationModel()));
 		router.put("ApplicationForm",new Controller(new ApplicationFormView(),new ApplicationFormModel()));
+		router.put("Applier",new Controller(new ApplierView(), new ApplierModel()));
+		router.put("TypeTable",new Controller(new TypeTableView(), new TypeTableModel()));
 
 		ViewData viewData = new ViewData("MainMenu", "");
 		do {

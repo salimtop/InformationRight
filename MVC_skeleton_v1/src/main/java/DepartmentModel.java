@@ -32,7 +32,7 @@ class DepartmentModel implements ModelInterface {
 	}
 
 	@Override
-	public int insert(Map<String, Object> insertParameters) throws Exception {
+	public Integer insert(Map<String, Object> insertParameters) throws Exception {
 	/*		// construct SQL statement
 		StringBuilder sql = new StringBuilder();
 		sql.append(" INSERT INTO HumanResources.Department (" + fieldNames + ") " );

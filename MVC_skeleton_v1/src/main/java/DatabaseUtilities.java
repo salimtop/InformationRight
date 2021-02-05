@@ -93,6 +93,8 @@ class DatabaseUtilities {
 		if (value instanceof String) {
 			return "'" + value + "'"; 
 		}
+		else if(value instanceof Boolean)
+			return (Boolean)value ? "1" : "0";
 		
 		return value.toString();
 	}

@@ -6,7 +6,7 @@ interface ModelInterface {
 
 	abstract ResultSet select(Map<String, Object> viewParameters) throws Exception;
 	
-	abstract int insert(Map<String,Object> insertParameters) throws Exception;
+	abstract Integer insert(Map<String,Object> insertParameters) throws Exception;
 
 	abstract int update(Map<String,Object> updateParameters, Map<String,Object> whereParameters) throws Exception;
 
@@ -27,9 +27,9 @@ interface ModelInterface {
 			case "insert":
 			{
 
-				int recordCount = insert(viewData.viewParameters);
+				Integer lastID = insert(viewData.viewParameters);
 				
-				return new ModelData(viewData.functionName, recordCount);
+				return new ModelData(viewData.functionName, lastID);
 			}
 			case "update":
 			{
@@ -50,7 +50,7 @@ interface ModelInterface {
 			}
 		}
 		
-		return new ModelData();
+		return new ModelData(viewData.viewParameters);
 	}
 	
 }

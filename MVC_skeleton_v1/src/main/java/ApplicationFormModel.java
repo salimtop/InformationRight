@@ -3,52 +3,84 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ApplicationFormModel implements ModelInterface{
     @Override
     public ResultSet select(Map<String, Object> viewParameters) throws Exception {
-        Map<String, Object> tableList = (Map<String, Object>)(viewParameters);
-
-
-        //retrieves all form attribute types: ex: ApplierType, TelephoneType...
-        Connection connection = DatabaseUtilities.getConnection();
-        ResultSet result;
-        Statement statement;
-
-        for (Map.Entry<String, Object> entry : tableList.entrySet()){
-            StringBuilder sql = new StringBuilder();
-            String columns = entry.getKey()+"Id , "+ entry.getKey();
-
-            Map<Integer,Object> table = (Map<Integer, Object>)entry.getValue();
-
-            sql.append(" SELECT ");
-            sql.append(columns);
-            sql.append(" FROM "+entry.getKey()+" ");
-
-
-
-            statement = connection.createStatement();
-            result = statement.executeQuery(sql.toString());
-
-            while(result.next()){
-                int id = result.getInt(entry.getKey()+"ID");
-                String type = result.getString(entry.getKey());
-                table.put(id,type);
-            }
-
-        }
-
-        ApplicationForm.types = (Map<String, Object>)tableList;
 
 
         return null;
     }
 
     @Override
-    public int insert(Map<String, Object> insertParameters) throws Exception {
-        return 0;
+    public Integer insert(Map<String, Object> insertParameters) throws Exception {
+        String applicationFormFieldName = (String)insertParameters.get("ApplicationFormFieldName");
+        String informationAndDocumentFieldName = ApplicationForm.InformationAndDocument.getFieldNames();
+
+        //get table objects
+        ApplicationForm applicationForm = (ApplicationForm)insertParameters.get("ApplicationForm");
+
+        // construct Applier SQL statement
+        StringBuilder sqlApplicationForm = new StringBuilder();
+        sqlApplicationForm.append("BEGIN TRAN INSERT INTO ApplicationForm (" + applicationFormFieldName + ") " );
+        sqlApplicationForm.append(" VALUES ");
+
+        String[] fieldList = applicationFormFieldName.split(",");
+
+        sqlApplicationForm.append("(");
+        for (int j=0; j<fieldList.length; j++) {
+            String fieldName = fieldList[j].trim();
+            sqlApplicationForm.append(DatabaseUtilities.formatField(applicationForm.getByName(fieldName)));
+            if (j < fieldList.length - 1) {
+                sqlApplicationForm.append(", ");
+            }
+        }
+        sqlApplicationForm.append(")");
+
+
+        //Insert requested data;
+        ArrayList<ApplicationForm.InformationAndDocument> requestedData = applicationForm.dataList;
+
+        for(int i = 0; i < requestedData.size(); i++){
+
+            sqlApplicationForm.append("\n INSERT INTO InformationAndDocument ( "+
+                    ApplicationForm.InformationAndDocument.getFieldNames() + ")");
+            sqlApplicationForm.append(" VALUES ");
+
+            fieldList = informationAndDocumentFieldName.split(",");
+
+            sqlApplicationForm.append("(");
+            for (int j=0; j<fieldList.length; j++) {
+                String fieldName = fieldList[j].trim();
+                sqlApplicationForm.append(DatabaseUtilities.formatField(requestedData.get(i).getByName(fieldName)));
+                if (j < fieldList.length - 1) {
+                    sqlApplicationForm.append(", ");
+                }
+            }
+            sqlApplicationForm.append(") \n");
+
+        }
+
+        sqlApplicationForm.append(" COMMIT");
+
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sqlApplicationForm.toString());
+
+        // execute constructed SQL statement
+
+        //Insert applier and get an ID
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlApplicationForm.toString());
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+
+
+        return (Integer) insertParameters.get("LastID");
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Applier {
             case "turkishIdentity": return turkishIdentity;
             case "citizenFlag": return citizenFlag;
             case "applierType": return applierType;
-            case "title": return title;
+            case "LegalPersonTitle": return title;
             case "telephone": return telephone;
             case "telephoneType": return telephoneType;
             case "email": return email;
@@ -38,7 +38,7 @@ public class Applier {
     }
 
     public static String getFieldNames(){
-        return "applicationNumber, name, middleName, lastName, turkishIdentity, citizenFlag, applierType, title, telephone, telephoneType"+
+        return "name, middleName, lastName, turkishIdentity, citizenFlag, applierType, LegalPersonTitle, telephone, telephoneType, "+
                 "email, address, addressType, fax";
     }
 

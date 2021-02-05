@@ -40,16 +40,12 @@ public class ApplicationModel implements ModelInterface{
     }
 
     @Override
-    public int insert(Map<String, Object> insertParameters) throws Exception {
+    public Integer insert(Map<String, Object> insertParameters) throws Exception {
 
         String applicationFieldName = (String)insertParameters.get("ApplicationFieldName");
-        String applicationFormFieldName = (String)insertParameters.get("ApplicationFormFieldName");
-        String applierFieldName = (String)insertParameters.get("ApplierFieldName");
-
-        //get table objects
-        Applier applier = (Applier)insertParameters.get("Applier");
         Application application = (Application)insertParameters.get("Application");
-        ApplicationForm applicationForm = (ApplicationForm)insertParameters.get("ApplicationForm");
+
+        Integer lastId = (Integer) insertParameters.get(("LastID"));
 
         // construct Application SQL statement
         StringBuilder sqlApplication = new StringBuilder();
@@ -57,18 +53,23 @@ public class ApplicationModel implements ModelInterface{
         sqlApplication.append(" VALUES ");
 
         String[] fieldList = applicationFieldName.split(",");
-
+// INSERT INTO Application (  status, MandatoryFlag, admissionDeliveryType, applicationDate, expireDate,  paymentNumber, paymentExpire, relatedApplication )  VALUES ( 1, 0, 1, '2021-02-05', (DATEADD(DAY, 15, CONVERT (DATE, CURRENT_TIMESTAMP))), NULL, NULL, NULL) SELECT SCOPE_IDENTITY() AS LastID
         sqlApplication.append("(");
         for (int j=0; j<fieldList.length; j++) {
             String fieldName = fieldList[j].trim();
-            sqlApplication.append(DatabaseUtilities.formatField(application.getByName(fieldName)));
+            if(fieldName.equals("applicationDate"))
+                sqlApplication.append(" CONVERT (DATE, CURRENT_TIMESTAMP) ");
+            else if(fieldName.equals("expireDate"))
+                sqlApplication.append("(DATEADD(DAY, 15 , CONVERT (DATE, CURRENT_TIMESTAMP)))");
+            else
+                sqlApplication.append(DatabaseUtilities.formatField(application.getByName(fieldName)));
             if (j < fieldList.length - 1) {
                 sqlApplication.append(", ");
             }
         }
         sqlApplication.append(")");
 
-        sqlApplication.append(" SELECT SCOPE_IDENTITY() AS LastID");
+
 
         if(DatabaseUtilities.monitoring)
             System.out.println(sqlApplication.toString());
@@ -76,65 +77,12 @@ public class ApplicationModel implements ModelInterface{
         //Insert Application and get an ID
         Connection connection = DatabaseUtilities.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(sqlApplication.toString());
-        ResultSet result = preparedStatement.executeQuery();
-        int lastID = result.getInt("LastID");
+        Integer dbResponse = preparedStatement.executeUpdate();
         preparedStatement.close();
 
-        applier.setApplicationNumber(lastID);
-        applicationForm.setApplicationNumber(lastID);
-
-
-
-        // construct ApplicationForm SQL statement
-        StringBuilder sqlApplicationForm = new StringBuilder();
-        sqlApplicationForm.append(" INSERT INTO ApplicationForm (" + applicationFieldName + ") " );
-        sqlApplicationForm.append(" VALUES ");
-
-        fieldList = applicationFieldName.split(",");
-
-        sqlApplicationForm.append("(");
-        for (int j=0; j<fieldList.length; j++) {
-            String fieldName = fieldList[j].trim();
-            sqlApplicationForm.append(DatabaseUtilities.formatField(applicationForm.getByName(fieldName)));
-            if (j < fieldList.length - 1) {
-                sqlApplicationForm.append(", ");
-            }
-        }
-        sqlApplicationForm.append(")");
-
-        if(DatabaseUtilities.monitoring)
-            System.out.println(sqlApplicationForm.toString());
-
-        // construct Applier SQL statement
-        StringBuilder sqlApplier = new StringBuilder();
-        sqlApplier.append(" INSERT INTO ApplicationForm (" + applicationFieldName + ") " );
-        sqlApplier.append(" VALUES ");
-
-        fieldList = applierFieldName.split(",");
-
-        sqlApplier.append("(");
-        for (int j=0; j<fieldList.length; j++) {
-            String fieldName = fieldList[j].trim();
-            sqlApplier.append(DatabaseUtilities.formatField(applier.getByName(fieldName)));
-            if (j < fieldList.length - 1) {
-                sqlApplier.append(", ");
-            }
-        }
-        sqlApplier.append(")");
-
-        if(DatabaseUtilities.monitoring)
-            System.out.println(sqlApplier.toString());
-
-
-        // execute constructed SQL statement
-
-        connection = DatabaseUtilities.getConnection();
-        preparedStatement = connection.prepareStatement(sqlApplication.toString());
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-
-
-        return lastID;
+        if(dbResponse != 0)
+            return lastId;
+        return -1;
     }
 
 

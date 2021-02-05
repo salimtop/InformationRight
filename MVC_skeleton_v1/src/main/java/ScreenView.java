@@ -17,7 +17,7 @@ public class ScreenView implements ViewInterface {
             case "select": return getScreen(modelData);
 
             //Database screens
-            case "newApplication" : return new ViewData("Application","newApplication");
+            case "newApplication" : return new ViewData("Applier","registerApplier");
             case "listApplication" : return new ViewData("Application","listApplication");
             case "listAllApplication" : return new ViewData("Application","listAllApplication");
 

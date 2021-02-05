@@ -22,7 +22,7 @@ class MainMenuView implements ViewInterface {
 		userInput.put("mainMenuChoice", choice);
 		
 		switch (choice.intValue()) {
-			case 1: return new ViewData("Application","newApplication");
+			case 1: return new ViewData("Applier","registerApplier");
 			case 2: operationName = "select.gui";	break;
 			case 3: operationName = "login.gui";
 				return new ViewData("Login", operationName, new HashMap<>());

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +8,41 @@ public class ApplicationForm {
     String request;
     Integer desiredDeliveryType;
 
-    public static Map<String, Object> types = new HashMap<>();
+    ArrayList<InformationAndDocument> dataList = new ArrayList<>();
+
+    static class InformationAndDocument{
+        public InformationAndDocument(Integer applicationNumber, String data, Boolean isInformation, Integer dataType) {
+            this.applicationNumber = applicationNumber;
+            this.data = data;
+            this.isInformation = isInformation;
+            this.dataType = dataType;
+        }
+
+        Integer applicationNumber;
+        Integer informationDocumentNum;
+       String data;
+       Boolean isInformation;
+       Integer dataType;
+
+        public Object getByName(String attributeName) {
+            switch (attributeName) {
+                case "applicationNumber" : return applicationNumber;
+                case "data": return data;
+                case "IsInformation": return isInformation;
+                case "dataType": return dataType;
+
+                default: return null;
+            }
+        }
+
+
+        public static String getFieldNames(){
+            return "applicationNumber, data, IsInformation, dataType";
+        }
+
+    }
+
+
 
 
     public ApplicationForm(Integer applicationNumber, String request, Integer desiredDeliveryType) {
@@ -18,7 +53,7 @@ public class ApplicationForm {
 
     public Object getByName(String attributeName) {
         switch (attributeName) {
-            case "ApplicationNumber": return applicationNumber;
+            case "applicationNumber": return applicationNumber;
             case "request": return request;
             case "desiredDeliveryType": return desiredDeliveryType;
 
@@ -34,14 +69,5 @@ public class ApplicationForm {
         this.applicationNumber = applicationNumber;
     }
 
-    public static HashMap<Integer,Object> showType(String type){
-        HashMap<Integer,Object> typeList = (HashMap<Integer, Object>) ApplicationForm.types.get(type);
-
-        for(Map.Entry<Integer, Object> entry : typeList.entrySet()){
-            System.out.println(""+entry.getKey()+" - "+entry.getValue());
-        }
-
-        return typeList;
-    }
 
 }

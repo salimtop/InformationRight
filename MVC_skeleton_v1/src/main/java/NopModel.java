@@ -10,7 +10,7 @@ public class NopModel implements ModelInterface {
 	}
 
 	@Override
-	public int insert(Map<String, Object> insertParameters) throws Exception {
+	public Integer insert(Map<String, Object> insertParameters) throws Exception {
 		return 0;
 	}
 
