@@ -29,7 +29,7 @@ public class Application {
     public Object getByName(String attributeName) {
         switch (attributeName) {
             case "ApplicationNumber": return applicationNumber;
-            case "status": return status;
+            case "statusType": return status;
             case "mandatoryFlag": return mandatory;
             case "admissionDeliveryType": return admissionDeliveryType;
             case "applicationDate": return applicationDate;
@@ -44,17 +44,18 @@ public class Application {
 
     public static String getFieldNames(){
 
-        return " ApplicationNumber, status, mandatoryFlag, admissionDeliveryType, applicationDate, expireDate, "+
+        return " ApplicationNumber, statusType , mandatoryFlag, admissionDeliveryType, applicationDate, expireDate, "+
                 " paymentNumber, paymentExpire, relatedApplication ";
     }
     public static String getOrderColumn(Integer attribute) throws Exception {
 
         switch(attribute){
             case 1: return "ApplicationNumber";
-            case 2: return "Status";
+            case 2: return "StatusType";
             case 3 : return "MandatoryFlag";
             case 4 : return "ApplicationDate";
             case 5 : return "ExpireDate";
+            case 6 : return "AdmittedBy";
         }
 
         if(attribute == null)
@@ -69,6 +70,7 @@ public class Application {
         System.out.println("3 - Mandatory Respond");
         System.out.println("4 - Application Date");
         System.out.println("5 - Application Expire Date");
+        System.out.println("6 - Admitted By");
 
     }
 

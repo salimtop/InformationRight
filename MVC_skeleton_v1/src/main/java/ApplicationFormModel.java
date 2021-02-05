@@ -10,9 +10,43 @@ import java.util.Map;
 public class ApplicationFormModel implements ModelInterface{
     @Override
     public ResultSet select(Map<String, Object> viewParameters) throws Exception {
+        Map<String, Object> whereParameters = (Map<String, Object>)(viewParameters.get("whereParameters"));
+
+        // construct SQL statement
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" Name,LastName,AF.ApplicationNumber,IsInformation,Request,DT.DeliveryType,Data,DaT.DataType ");
+        sql.append(" FROM ApplicationForm AS AF INNER JOIN InformationAndDocument AS IAD\n" +
+                "        ON IAD.ApplicationNumber = AF.ApplicationNumber\n" +
+                "        INNER JOIN Applier AS APL\n" +
+                "        ON APL.ApplicationNumber = AF.ApplicationNumber\n" +
+                "        INNER JOIN DeliveryType AS DT\n" +
+                "        ON DT.DeliveryTypeId = AF.DesiredDeliveryType\n "+
+                "        INNER JOIN DataType AS DaT\n" +
+                "        ON DaT.DataTypeId = IAD.DataType\n");
 
 
-        return null;
+        if((boolean) viewParameters.get("justAdmitted"))
+            sql.append("        INNER JOIN Admission AS ADM\n" +
+                    "        ON ADM.ApplicationNumber = AF.ApplicationNumber ");
+
+
+        List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
+        sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
+
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sql.toString() + "\n");
+
+
+        // execute constructed SQL statement
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+        DatabaseUtilities.setWhereStatementParameters(preparedStatement, whereParameterList);
+        ResultSet result = preparedStatement.executeQuery();
+
+        return result;
+
     }
 
     @Override

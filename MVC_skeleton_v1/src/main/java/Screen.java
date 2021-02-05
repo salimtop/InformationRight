@@ -7,8 +7,12 @@ public class Screen {
             case "newApplication" : return "New Application";
             case "listApplication" : return "List Applications";
             case "listAllApplication" : return "List All Applications";
+            case "admitApplication" : return "Admit Application";
+            case "showApplication" : return "Show Application";
+            case "showInstitution" : return "Show Institution";
+            case "Quit" : return "Quit";
         }
-
+        System.out.println(columnName);
         return "Invalid Column";
     }
 

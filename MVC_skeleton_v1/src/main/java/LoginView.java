@@ -67,8 +67,8 @@ public class LoginView implements ViewInterface{
 
 
     Map<String, Object> getWhereParameters() throws Exception {
-        String username = getString("Username : ", false);
-        String password = getString("Password : ", false);
+        String username = "salimtop";//getString("Username : ", false);
+        String password = "1234";//getString("Password : ", false);
 
         Map<String, Object> whereParameters = new HashMap<>();
         if (username != null) whereParameters.put("username", username);

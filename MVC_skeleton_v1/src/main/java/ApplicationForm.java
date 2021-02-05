@@ -19,7 +19,6 @@ public class ApplicationForm {
         }
 
         Integer applicationNumber;
-        Integer informationDocumentNum;
        String data;
        Boolean isInformation;
        Integer dataType;

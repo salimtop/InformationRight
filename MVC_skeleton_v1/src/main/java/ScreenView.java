@@ -18,9 +18,12 @@ public class ScreenView implements ViewInterface {
 
             //Database screens
             case "newApplication" : return new ViewData("Applier","registerApplier");
-            case "listApplication" : return new ViewData("Application","listApplication");
+            case "listApplication" : return new ViewData("Admission","listApplication");
             case "listAllApplication" : return new ViewData("Application","listAllApplication");
-
+            case "showApplication" : return new ViewData("ApplicationForm","showApplicationForm");
+            case "showInstitution" : return new ViewData("Institution","select",new HashMap());
+            case "admitApplication" : return new ViewData("Admission","admit", (Map<String, Object>) modelData.transferData);
+/    admission datayı kaybetmeden institutiona bastır.
         }
 
 
@@ -54,6 +57,7 @@ public class ScreenView implements ViewInterface {
 
                 allScreens.put(screenNumber++,screen);
             }
+            allScreens.putIfAbsent(screenNumber,"Quit");
             resultSet.close();
 
             Login.setScreen(allScreens);
@@ -72,17 +76,15 @@ public class ScreenView implements ViewInterface {
             System.out.println("Authentication error! ");
             return new ViewData("Login", "loadScreen");
         }
-        int i;
+        int i = 1;
         for(i = 1; i <= screen.size(); i++)
             System.out.println(""+i+" "+Screen.getByColumnName(screen.get(i)));
-        System.out.println(""+i+" "+" Quit");
-        screen.put(i," Quit");
 
         Integer choice;
         do{
             choice = getInteger("Enter choice:",false);
         }
-        while(choice < 0 || choice > screen.size()+1);
+        while(choice < 0 || choice > screen.size());
 
 
         return new ViewData("Screen", screen.get(choice));
