@@ -92,7 +92,35 @@ public class ApplicationModel implements ModelInterface{
 
     @Override
     public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
-        return 0;
+        // construct SQL statement
+        StringBuilder sql = new StringBuilder();
+        sql.append(" UPDATE Application SET ");
+        int appendCount = 0;
+        for (Map.Entry<String, Object> entry : updateParameters.entrySet()) {
+
+            if(entry.getKey().toString().contains("Expire"))
+                sql.append(entry.getKey() + " =  CONVERT(DATE, DATEADD(DAY,15, CURRENT_TIMESTAMP)) ");
+            else
+                sql.append(entry.getKey() + " = " + DatabaseUtilities.formatField(entry.getValue()));
+            if (++appendCount < updateParameters.size()) {
+                sql.append(", ");
+            }
+        }
+        List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
+        sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sql.toString());
+
+
+        // execute constructed SQL statement
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+        DatabaseUtilities.setWhereStatementParameters(preparedStatement, whereParameterList);
+        int rowCount = preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+        return rowCount;
     }
 
     @Override

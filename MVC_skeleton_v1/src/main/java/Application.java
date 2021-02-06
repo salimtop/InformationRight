@@ -9,21 +9,28 @@ public class Application {
     Integer admissionDeliveryType;
     Date applicationDate;
     Date expireDate;
-    Integer paymentNumber;
+    Integer paymentAmount;
     Date paymentExpire;
     Integer relatedApplication;
 
 
-    public Application(Integer applicationNumber, Integer status, Boolean mandatory, Integer admissionDeliveryType, Date applicationDate, Date expireDate, Integer paymentNumber, Date paymentExpire, Integer relatedApplication) {
+    public Application(Integer applicationNumber, Integer status, Boolean mandatory, Integer admissionDeliveryType, Date applicationDate, Date expireDate, Integer paymentAmount, Date paymentExpire, Integer relatedApplication) {
         this.applicationNumber = applicationNumber;
         this.status = status;
         this.mandatory = mandatory;
         this.admissionDeliveryType = admissionDeliveryType;
         this.applicationDate = applicationDate;
         this.expireDate = expireDate;
-        this.paymentNumber = paymentNumber;
+        this.paymentAmount = paymentAmount;
         this.paymentExpire = paymentExpire;
         this.relatedApplication = relatedApplication;
+    }
+
+    public Application(Integer applicationNumber, Boolean mandatory, Date applicationDate, Date expireDate) {
+        this.applicationNumber = applicationNumber;
+        this.mandatory = mandatory;
+        this.applicationDate = applicationDate;
+        this.expireDate = expireDate;
     }
 
     public Object getByName(String attributeName) {
@@ -34,7 +41,7 @@ public class Application {
             case "admissionDeliveryType": return admissionDeliveryType;
             case "applicationDate": return applicationDate;
             case "expireDate": return expireDate;
-            case "paymentNumber": return paymentNumber;
+            case "paymentAmount": return paymentAmount;
             case "paymentExpire": return paymentExpire;
             case "relatedApplication": return relatedApplication;
 
@@ -45,7 +52,7 @@ public class Application {
     public static String getFieldNames(){
 
         return " ApplicationNumber, statusType , mandatoryFlag, admissionDeliveryType, applicationDate, expireDate, "+
-                " paymentNumber, paymentExpire, relatedApplication ";
+                " paymentAmount, paymentExpire, relatedApplication ";
     }
     public static String getOrderColumn(Integer attribute) throws Exception {
 

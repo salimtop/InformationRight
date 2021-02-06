@@ -14,13 +14,15 @@ public class AdmissionModel implements ModelInterface{
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
 
-        sql.append(" AP.ApplicationNumber, S.StatusType, MandatoryFlag, ExpireDate , ApplicationDate,I.InstitutionName AS AdmittedBy ");
+        sql.append("  AP.ApplicationNumber, S.StatusType, AP.MandatoryFlag, AP.ExpireDate , AP.ApplicationDate,I.InstitutionName AS AdmittedBy,AP.PaymentAmount,AP.PaymentExpire  ");
         sql.append(" FROM Application AS AP LEFT OUTER JOIN Admission AS AD \n" +
                 "            ON AP.ApplicationNumber = AD.ApplicationNumber \n" +
                 "        INNER JOIN StatusType AS S \n" +
-                "            ON AP.Status = S.StatusTypeID \n" +
+                "            ON AP.StatusType = S.StatusTypeID \n" +
                 "        LEFT OUTER JOIN Institution AS I \n" +
-                "            ON AD.AdmittedBy = I.InstitutionId ");
+                "            ON AD.AdmittedBy = I.InstitutionId \n"+
+                "        INNER JOIN Application A\n" +
+                "        ON A.ApplicationNumber = AP.ApplicationNumber");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));

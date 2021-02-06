@@ -17,10 +17,23 @@ public class ApplicationView implements ViewInterface{
             case "listAllApplication" : return sendAllListRequest(modelData);
             case "select" : return listApplication(modelData);
             case "insert" : return showApplicationNumber(modelData);
+            case "update" : return update(modelData);
         }
 
         System.out.println("No screen found");
         return null;
+    }
+
+    private ViewData update(ModelData modelData) {
+        //redirect if another process requests
+        if(modelData.transferData.containsKey("redirectFunction")){
+            modelData.transferData.put("applicationUpdate",true);
+            String function = (String) modelData.transferData.get("redirectFunction");
+            String operation = (String) modelData.transferData.get("redirectOperation");
+            return new ViewData(function,operation,modelData.transferData);
+        }
+
+        return new ViewData("Screen","screen.gui");
     }
 
     private ViewData showApplicationNumber(ModelData modelData) {
@@ -114,7 +127,7 @@ public class ApplicationView implements ViewInterface{
 
         Map<String,Object> parameters = (Map<String, Object>) modelData.transferData;
 
-        Integer lastId = (Integer) parameters.get("LastId");
+        Integer lastId = (Integer) parameters.get("lastId");
 
         Application application = createApplicationGUI();
 

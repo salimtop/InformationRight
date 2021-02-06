@@ -28,10 +28,14 @@ public class ApplierView implements ViewInterface{
     }
 
     private ViewData registerApplier(ModelData modelData) throws ParseException {
-        if(TypeTable.types == null)
-            return new ViewData("TypeTable","loadChoice");
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = modelData.transferData == null ?  new HashMap<String, Object>() : modelData.transferData;
+
+        if(TypeTable.types == null){
+            parameters.put("redirectFunction","Applier");
+            parameters.put("redirectOperation","registerApplier");
+            return new ViewData("TypeTable","loadChoice",parameters);
+        }
 
         Applier applier = createApplierGUI();
 

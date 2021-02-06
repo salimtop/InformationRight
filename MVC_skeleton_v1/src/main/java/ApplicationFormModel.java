@@ -15,7 +15,7 @@ public class ApplicationFormModel implements ModelInterface{
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" Name,LastName,AF.ApplicationNumber,IsInformation,Request,DT.DeliveryType,Data,DaT.DataType ");
+        sql.append(" Name,LastName,AF.ApplicationNumber,IsInformation,Request,DT.DeliveryType,Data,DaT.DataType ,PaymentAmount, PaymentExpire");
         sql.append(" FROM ApplicationForm AS AF INNER JOIN InformationAndDocument AS IAD\n" +
                 "        ON IAD.ApplicationNumber = AF.ApplicationNumber\n" +
                 "        INNER JOIN Applier AS APL\n" +
@@ -23,7 +23,9 @@ public class ApplicationFormModel implements ModelInterface{
                 "        INNER JOIN DeliveryType AS DT\n" +
                 "        ON DT.DeliveryTypeId = AF.DesiredDeliveryType\n "+
                 "        INNER JOIN DataType AS DaT\n" +
-                "        ON DaT.DataTypeId = IAD.DataType\n");
+                "        ON DaT.DataTypeId = IAD.DataType\n"+
+                "        INNER JOIN Application A\n" +
+                "       ON A.ApplicationNumber = AF.ApplicationNumber\n" );
 
 
         if((boolean) viewParameters.get("justAdmitted"))

@@ -6,7 +6,7 @@ import java.util.Map;
 public class TypeTableModel implements ModelInterface{
     @Override
     public ResultSet select(Map<String, Object> viewParameters) throws Exception {
-        Map<String, Object> tableList = (Map<String, Object>)(viewParameters);
+        Map<String, Object> tableList = (Map<String, Object>)(viewParameters).get("types");
 
 
         //retrieves all form attribute types: ex: ApplierType, TelephoneType...
@@ -37,7 +37,7 @@ public class TypeTableModel implements ModelInterface{
 
         }
 
-        TypeTable.types = (Map<String, Object>)tableList;
+        TypeTable.types = tableList;
 
 
         return null;

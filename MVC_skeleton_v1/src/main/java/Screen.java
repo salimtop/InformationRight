@@ -2,10 +2,10 @@ public class Screen {
 
 
     public static String getByColumnName(String columnName){
-
+        // Synchronise with DB
         switch(columnName){
             case "newApplication" : return "New Application";
-            case "listApplication" : return "List Applications";
+            case "listAssigned" : return "List Assigned Applications";
             case "listAllApplication" : return "List All Applications";
             case "admitApplication" : return "Admit Application";
             case "showApplication" : return "Show Application";

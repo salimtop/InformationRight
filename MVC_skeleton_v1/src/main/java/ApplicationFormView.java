@@ -2,6 +2,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -24,6 +25,8 @@ public class ApplicationFormView implements ViewInterface {
     private ViewData showApplicationForm(ModelData modelData) throws SQLException, ParseException {
         ResultSet result = modelData.resultSet;
         Integer applicationNumber = null;
+        Integer payment = null;
+        Date paymentExpire = null;
 
 
         ArrayList<String[]> table = new ArrayList<String[]>();
@@ -42,6 +45,8 @@ public class ApplicationFormView implements ViewInterface {
             String deliveryType = result.getString("DeliveryType");
             String data = result.getString("Data");
             String dataType = result.getString("DataType");
+            payment = result.getInt("PaymentAmount");
+            paymentExpire = result.getDate("PaymentExpire");
 
             row[0] = name;
             row[1] = lastName;
@@ -56,6 +61,7 @@ public class ApplicationFormView implements ViewInterface {
 
         }
         System.out.println("Application number :"+applicationNumber);
+        System.out.println("Charge :"+payment+(payment == 0 ? "" : "Expire :"+paymentExpire));
         DatabaseUtilities.printTable(table,true);
         getString("Press enter to continue",true);
 
