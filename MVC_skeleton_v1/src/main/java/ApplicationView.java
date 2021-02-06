@@ -26,7 +26,7 @@ public class ApplicationView implements ViewInterface{
     private ViewData showApplicationNumber(ModelData modelData) {
 
         //dbResponse is last inserted row
-        Integer dbResponse = (Integer) modelData.transferData;
+        Integer dbResponse = (Integer) modelData.transferData.get("lastId");
 
         if(dbResponse != -1){
             System.out.println("The application has saved successfully!");
@@ -40,7 +40,7 @@ public class ApplicationView implements ViewInterface{
     }
 
 
-    private ViewData listApplication(ModelData modelData) throws SQLException {
+    private ViewData listApplication(ModelData modelData) throws SQLException, ParseException {
         ResultSet resultSet = modelData.resultSet;
 
         if (resultSet != null) {
@@ -48,9 +48,10 @@ public class ApplicationView implements ViewInterface{
             HashMap<String, Object> viewParameters = new HashMap<>();
             //AD.ApplicationNumber, AP.Status, MandatoryFlag, ExpireDate , ApplicationDate
 
-            System.out.println("Application Number\tStatus\tMandatory\tExpire Date\tApplication Date\tAdmitted By");
-            System.out.println("----------------------------------------------------------------------------------------");
+            ArrayList<String[]> table = new ArrayList<>();
+            table.add(new String[]{"Application Number","Status","Mandatory","Expire Date","Application Date","Admitted By"});
             while (resultSet.next()) {
+                String[] row = new String[table.get(0).length];
                 // Retrieve by column name
                Integer applicationNumber = resultSet.getInt("ApplicationNumber");
                String status = resultSet.getString("StatusType");
@@ -59,30 +60,46 @@ public class ApplicationView implements ViewInterface{
                Date applicationDate = resultSet.getDate("ApplicationDate");
                String admittedBy = resultSet.getString("AdmittedBy");
 
+                row[0] = String.valueOf(applicationNumber);
+                row[1] = status;
+                row[2] = String.valueOf(mandatory);
+                row[3] = String.valueOf(expireDate);
+                row[4] = String.valueOf(applicationDate);
+                row[5] = String.valueOf(admittedBy);
 
-
-                // Display values
-                System.out.println(applicationNumber+"\t\t\t\t"+status+"\t"+mandatory+"\t\t"+expireDate+"\t\t"+applicationDate+
-                        "\t\t\t"+admittedBy);
-
-
-                }
+                table.add(row);
 
             }
+            DatabaseUtilities.printTable(table,false);
+
+            getString("Press Enter to continue",true);
+
+            }
+
+        if(modelData.transferData.containsKey("redirectFunction")){
+            String function = (String) modelData.transferData.get("redirectFunction");
+            String operation = (String) modelData.transferData.get("redirectOperation");
+            return new ViewData(function,operation,modelData.transferData);
+        }
 
 
         return new ViewData("Screen", "screen.gui");
     }
 
     private ViewData sendAllListRequest(ModelData modelData) throws Exception {
+        HashMap<String,Object> parameters = (HashMap<String, Object>) modelData.transferData;
+        if(modelData.transferData == null)
+            parameters = new HashMap<>();
 
-        HashMap<String,Object> parameters = new HashMap<>();
+        Integer filter = null;
+        boolean askOrder = !parameters.containsKey("ORDER BY");
 
-        System.out.println("Order Condition");
-        Application.orderList();
-        Integer filter = getInteger("Enter your order choice (Press enter to continue)",true);
-
-        if(filter != null)
+        if(askOrder){
+            System.out.println("Order Condition");
+            Application.orderList();
+            filter = getInteger("Enter your order choice (Press enter to continue)",true);
+        }
+        if(filter != null && askOrder)
             parameters.put("ORDER BY",Application.getOrderColumn(filter));
 
         return new ViewData("Application", "select", parameters);
@@ -97,7 +114,7 @@ public class ApplicationView implements ViewInterface{
 
         Map<String,Object> parameters = (Map<String, Object>) modelData.transferData;
 
-        Integer lastId = (Integer) parameters.get("LastID");
+        Integer lastId = (Integer) parameters.get("LastId");
 
         Application application = createApplicationGUI();
 

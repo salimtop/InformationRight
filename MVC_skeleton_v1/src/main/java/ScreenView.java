@@ -1,7 +1,5 @@
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +8,7 @@ public class ScreenView implements ViewInterface {
     @Override
     public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
 
+        Map<String,Object> transferData =modelData.transferData;
 
         switch(operationName){
             case "screen.gui": return screenMenu(modelData);
@@ -19,11 +18,13 @@ public class ScreenView implements ViewInterface {
             //Database screens
             case "newApplication" : return new ViewData("Applier","registerApplier");
             case "listApplication" : return new ViewData("Admission","listApplication");
-            case "listAllApplication" : return new ViewData("Application","listAllApplication");
+            case "listAllApplication" : return new ViewData("Application","listAllApplication",modelData.transferData);
             case "showApplication" : return new ViewData("ApplicationForm","showApplicationForm");
-            case "showInstitution" : return new ViewData("Institution","select",new HashMap());
+            case "showInstitution" : //transfer data contains arrive point of data
+                return new ViewData("Institution","select",transferData == null ? new HashMap<>() : transferData );
             case "admitApplication" : return new ViewData("Admission","admit", (Map<String, Object>) modelData.transferData);
-/    admission datayı kaybetmeden institutiona bastır.
+
+
         }
 
 

@@ -2,6 +2,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,13 +13,14 @@ public class InstitutionView implements ViewInterface {
     public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
 
         switch (operationName){
-            case "select" : return admitToInstitution(modelData);
+            case "select" : return showInstitution(modelData);
         }
 
         return null;
     }
 
-    private ViewData admitToInstitution(ModelData modelData) throws SQLException, ParseException {
+
+    private ViewData showInstitution(ModelData modelData) throws SQLException, ParseException {
         Map<String,Object> parameters = new HashMap<String,Object>();
 
         ResultSet result = modelData.resultSet;
@@ -27,14 +29,37 @@ public class InstitutionView implements ViewInterface {
         String address = null;
         BigDecimal telephone = null;
         String superior = null;
-        System.out.println("Institution Id\tInstitution Name\t\t\t\tAddress\tTelephone\tSuperior");
+
+        ArrayList<String[]> table = new ArrayList();
+        table.add(new String[]{"Institution Id","Institution Name","Telephone","Superior","Address"});
+
+
         while(result.next()){
+            String[] row = new String[table.get(0).length];
+
             institutionId = result.getInt("InstitutionId");
             institutionName = result.getString("InstitutionName");
             address = result.getString("Address");
             telephone = result.getBigDecimal("Telephone");
             superior = result.getString("Superior");
-            System.out.println(""+institutionId+"\t\t\t\t"+institutionName+"\t\t\t\t"+address+"\t"+telephone+"\t"+superior);
+
+            row[0] = String.valueOf(institutionId);
+            row[1] = String.valueOf(institutionName);
+            row[2] = String.valueOf(telephone);
+            row[3] = String.valueOf(superior);
+            row[4] = String.valueOf(address);
+
+            table.add(row);
+        }
+
+        DatabaseUtilities.printTable(table,false);
+        getString("Press enter to continue",true);
+
+        if(modelData.transferData.containsKey("redirectFunction")){
+            String function = (String) modelData.transferData.get("redirectFunction");
+            String operation = (String) modelData.transferData.get("redirectOperation");
+            modelData.transferData.put("institutionFlag",true);
+            return new ViewData(function,operation,modelData.transferData);
         }
 
         return new ViewData("Screen","screen.gui");

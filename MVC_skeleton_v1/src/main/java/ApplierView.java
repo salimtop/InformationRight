@@ -16,13 +16,13 @@ public class ApplierView implements ViewInterface{
 
     private ViewData openApplicationForm(ModelData modelData) {
 
-        Integer lastID = (Integer)modelData.transferData;
+        Integer lastID = (Integer)modelData.transferData.get("lastId");
 
         if(lastID == null)
             System.out.println("Applier ID could not be retrieved");
 
         HashMap<String,Object> parameters = new HashMap<String,Object>();
-        parameters.put("LastID",lastID);
+        parameters.put("lastId",lastID);
 
         return new ViewData("ApplicationForm","fillForm",parameters);
     }

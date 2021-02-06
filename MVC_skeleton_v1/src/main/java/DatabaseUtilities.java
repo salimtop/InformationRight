@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 
 class DatabaseUtilities {
@@ -60,6 +61,8 @@ class DatabaseUtilities {
 				String pref = (i == 0 ? " WHERE " : " AND ");
 				if (value instanceof String && value.toString().contains("%"))
 					whereStatement.append(pref + key + " LIKE ? ");
+				else if(value instanceof String && value.toString().contains("NULL"))
+					whereStatement.append(pref+ key +" " +value+" ");
 				else
 					whereStatement.append(pref + key + " = ? ");				
 			}
@@ -79,7 +82,7 @@ class DatabaseUtilities {
 					preparedStatement.setInt(i + 1, (Integer)value);
 				}
 				
-				if (value instanceof String) {
+				if (value instanceof String && !value.toString().contains("NULL")) {
 					preparedStatement.setString(i + 1, (String)value);
 				}			
 			}
@@ -98,5 +101,53 @@ class DatabaseUtilities {
 		
 		return value.toString();
 	}
-	
+
+
+	public static void printTable(ArrayList<String[]> table, boolean rightJustified){
+
+
+		Map<Integer, Integer> columnLengths = new HashMap<>();
+
+		table.stream().forEach(a -> Stream.iterate(0, (i -> i < a.length), (i -> ++i)).forEach(i -> {
+			if (columnLengths.get(i) == null) {
+				columnLengths.put(i, 0);
+			}
+			if (columnLengths.get(i) < a[i].length()) {
+				columnLengths.put(i, a[i].length());
+			}
+		}));
+
+		/*
+		 * Prepare format String
+		 */
+		final StringBuilder formatString = new StringBuilder("");
+		String flag = rightJustified ? "" : "-";
+		columnLengths.entrySet().stream().forEach(e -> formatString.append("| %" + flag + e.getValue() + "s "));
+		formatString.append("|\n");
+
+		/*
+		 * Prepare line for top, bottom & below header row.
+		 */
+		String line = columnLengths.entrySet().stream().reduce("", (ln, b) -> {
+			String templn = "+-";
+			templn = templn + Stream.iterate(0, (i -> i < b.getValue()), (i -> ++i)).reduce("", (ln1, b1) -> ln1 + "-",
+					(a1, b1) -> a1 + b1);
+			templn = templn + "-";
+			return ln + templn;
+		}, (a, b) -> a + b);
+		line = line + "+\n";
+
+
+		 // Print table
+		String[] columns = table.remove(0);
+		System.out.print(line);
+		System.out.printf(formatString.toString(),columns);
+		System.out.print(line);
+		table.forEach(a -> System.out.printf(formatString.toString(), a));
+		System.out.print(line);
+
+
+
+	}
+
 }

@@ -32,6 +32,7 @@ public class TypeTableView implements ViewInterface{
         HashMap<String,Object> deliveryType = new HashMap<>();
         HashMap<String,Object> statusType = new HashMap<>();
         HashMap<String,Object> dataType = new HashMap<>();
+        HashMap<String,Object> rejectionType = new HashMap<>();
 
         types.put("TelephoneType",telephoneType);
         types.put("AddressType",addressType);
@@ -39,6 +40,7 @@ public class TypeTableView implements ViewInterface{
         types.put("DeliveryType",deliveryType);
         types.put("StatusType",statusType);
         types.put("DataType",dataType);
+        types.put("RejectionType",rejectionType);
 
 
         return new ViewData("TypeTable", "select", types);

@@ -51,6 +51,8 @@ public class LoginView implements ViewInterface{
 
                     //singleton class
                     Login.instance(username, name, surname, personalId,departmentId);
+
+                    getString("\nPress enter to continue",true);
                     return new ViewData("Screen", "loadScreen");
                 }
 

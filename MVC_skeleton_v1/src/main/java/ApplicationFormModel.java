@@ -114,7 +114,7 @@ public class ApplicationFormModel implements ModelInterface{
 
 
 
-        return (Integer) insertParameters.get("LastID");
+        return (Integer) insertParameters.get("lastId");
     }
 
     @Override

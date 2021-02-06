@@ -22,14 +22,17 @@ interface ModelInterface {
 			{
 				ResultSet resultSet = select(viewData.viewParameters);
 				
-				return new ModelData(viewData.functionName, resultSet);
+				return new ModelData(viewData.functionName, resultSet,viewData.viewParameters);
 			}
 			case "insert":
 			{
 
 				Integer lastID = insert(viewData.viewParameters);
-				
-				return new ModelData(viewData.functionName, lastID);
+
+				Map<String,Object> parameters = new HashMap<String,Object>();
+				parameters.put("lastId",lastID);
+
+				return new ModelData(viewData.functionName, parameters);
 			}
 			case "update":
 			{
@@ -37,16 +40,22 @@ interface ModelInterface {
 				Map<String, Object> whereParameters = (Map<String, Object>)(viewData.viewParameters.get("whereParameters"));
 				
 				int recordCount = update(updateParameters, whereParameters);
+
+				Map<String,Object> parameters = new HashMap<String,Object>();
+				parameters.put("recordCount",recordCount);
 				
-				return new ModelData(viewData.functionName, recordCount);
+				return new ModelData(viewData.functionName, parameters);
 			}
 			case "delete":
 			{
 				Map<String, Object> whereParameters = (Map<String, Object>)(viewData.viewParameters.get("whereParameters"));
 				
 				int recordCount = delete(whereParameters);
+
+				Map<String,Object> parameters = new HashMap<String,Object>();
+				parameters.put("recordCount",recordCount);
 				
-				return new ModelData(viewData.functionName, recordCount);
+				return new ModelData(viewData.functionName, parameters);
 			}
 		}
 		

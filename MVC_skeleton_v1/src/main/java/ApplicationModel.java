@@ -48,7 +48,7 @@ public class ApplicationModel implements ModelInterface{
         String applicationFieldName = (String)insertParameters.get("ApplicationFieldName");
         Application application = (Application)insertParameters.get("Application");
 
-        Integer lastId = (Integer) insertParameters.get(("LastID"));
+        Integer lastId = (Integer) insertParameters.get("lastId");
 
         // construct Application SQL statement
         StringBuilder sqlApplication = new StringBuilder();

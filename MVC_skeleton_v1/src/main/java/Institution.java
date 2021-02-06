@@ -1,2 +1,2 @@
-public class Institution {
+public class Institution  {
 }

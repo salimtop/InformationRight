@@ -1,9 +1,9 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+
 
 public class ApplicationFormView implements ViewInterface {
 
@@ -12,25 +12,29 @@ public class ApplicationFormView implements ViewInterface {
     public ViewData create(ModelData modelData, String functionName, String operationName) throws Exception {
         switch (operationName){
             case "fillForm" : return openApplicationForm(modelData);
-            case "showApplicationForm" : return showApplicationForm(modelData);
+            case "showApplicationForm" : return showApplicationFormRequest(modelData);
             case "insert" : return redirectSaveApplication(modelData);
-            case "select" : return printForm(modelData);
+            case "select" : return showApplicationForm(modelData);
 
         }
 
         return null;
     }
 
-    private ViewData printForm(ModelData modelData) throws SQLException {
+    private ViewData showApplicationForm(ModelData modelData) throws SQLException, ParseException {
         ResultSet result = modelData.resultSet;
         Integer applicationNumber = null;
 
-        if(result.next())
-            applicationNumber = result.getInt("ApplicationNumber");
-        System.out.println("Application Number : "+applicationNumber);
 
-        System.out.println("Name\t\tLast Name\tInformation&Document\trequest\t\t\tDelivery Type");
+        ArrayList<String[]> table = new ArrayList<String[]>();
+
+
+        table.add(new String[]{"Name","Last Name","Information&Document","request","Delivery Type","DataType","Data"});
+
         while(result.next()){
+            String[] row = new String[table.get(0).length];
+
+            applicationNumber = result.getInt("ApplicationNumber");
             String name = result.getString("Name");
             String lastName = result.getString("LastName");
             Boolean isInformation = result.getBoolean("IsInformation");
@@ -39,25 +43,52 @@ public class ApplicationFormView implements ViewInterface {
             String data = result.getString("Data");
             String dataType = result.getString("DataType");
 
-            System.out.println(name+"\t"+lastName+"\t"+(isInformation ? "Information" : "Document")+"\t"+request+"\t"+deliveryType+"\t"+data+"\t"+dataType);
+            row[0] = name;
+            row[1] = lastName;
+            row[2] = (isInformation  ? "Information" : "Document");
+            row[3] = request;
+            row[4] = deliveryType;
+            row[5] = dataType;
+            row[6] = data;
+
+
+            table.add(row);
 
         }
+        System.out.println("Application number :"+applicationNumber);
+        DatabaseUtilities.printTable(table,true);
+        getString("Press enter to continue",true);
 
+        //redirect if another process requests
+        if(modelData.transferData.containsKey("redirectFunction")){
+            modelData.transferData.put("applicationNumber",applicationNumber);
+            String function = (String) modelData.transferData.get("redirectFunction");
+            String operation = (String) modelData.transferData.get("redirectOperation");
+            return new ViewData(function,operation,modelData.transferData);
+        }
 
         return new ViewData("Screen","screen.gui");
     }
 
-    private ViewData showApplicationForm(ModelData modelData) throws ParseException {
-        Integer applicationNumber = getInteger("Enter application number :",true);
+    private ViewData showApplicationFormRequest(ModelData modelData) throws ParseException {
+        Integer applicationNumber = null;
+
+        applicationNumber = getInteger("Enter application number :",true);
+
         if(applicationNumber == null)
             return new ViewData("Screen","screen.gui");
 
         Integer departmentId = Login.getInstitutionId();
-        HashMap<String,Object> parameters = new HashMap<String,Object>();
+        HashMap<String,Object> parameters = (HashMap<String, Object>) modelData.transferData;
+
+        //if no process request data create by self
+        if(parameters == null)
+            parameters = new HashMap<String,Object>();
         HashMap<String,Object> whereParameters = new HashMap<String,Object>();
 
         parameters.put("whereParameters",whereParameters);
 
+        //If user have authority to see all application forms
         if(Login.getScreen().containsValue("listAllApplication"))
             parameters.put("justAdmitted",false);
         else{
@@ -72,10 +103,10 @@ public class ApplicationFormView implements ViewInterface {
 
 
     private ViewData redirectSaveApplication(ModelData modelData) {
-        Integer lastId = (Integer) modelData.transferData;
+        Integer lastId = (Integer) modelData.transferData.get("lastId");
 
         HashMap<String,Object> parameters = new HashMap<String,Object>();
-        parameters.put("LastID",lastId);
+        parameters.put("lastId",lastId);
 
         return new ViewData("Application","createApplication",parameters);
     }
@@ -83,7 +114,7 @@ public class ApplicationFormView implements ViewInterface {
     private ViewData openApplicationForm(ModelData modelData) throws ParseException {
         HashMap<String,Object> parameters = (HashMap<String, Object>) modelData.transferData;
 
-        Integer lastId = (Integer) parameters.get("LastID");
+        Integer lastId = (Integer) parameters.get("lastId");
 
         ApplicationForm applicationForm = createApplicationFormGUI(lastId);
 

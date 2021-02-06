@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,45 @@ public class AdmissionModel implements ModelInterface{
 
     @Override
     public Integer insert(Map<String, Object> insertParameters) throws Exception {
-        return null;
+        String admissionFieldName = (String)insertParameters.get("AdmissionFieldName");
+        
+        //get table objects
+        Admission admission = (Admission)insertParameters.get("Admission");
+
+        // construct Applier SQL statement
+        StringBuilder sqlAdmission = new StringBuilder();
+        sqlAdmission.append("INSERT INTO Admission (" + admissionFieldName + ") " );
+        sqlAdmission.append(" VALUES ");
+
+        String[] fieldList = admissionFieldName.split(",");
+
+        sqlAdmission.append("(");
+        for (int j=0; j<fieldList.length; j++) {
+            String fieldName = fieldList[j].trim();
+            if(fieldName.equals("admissionDate"))
+                sqlAdmission.append(" CONVERT(DATE, CURRENT_TIMESTAMP) ");
+            else
+                sqlAdmission.append(DatabaseUtilities.formatField(admission.getByName(fieldName)));
+
+            if (j < fieldList.length - 1) {
+                sqlAdmission.append(", ");
+            }
+        }
+        sqlAdmission.append(")");
+
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sqlAdmission.toString());
+
+        // execute constructed SQL statement
+
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlAdmission.toString());
+        Integer result = preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+        if(result > 0)
+            return admission.applicationNumber;
+        return -1;
     }
 
     @Override

@@ -1,9 +1,11 @@
 import java.sql.ResultSet;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class ModelData {
 	final String modelName;
 	final ResultSet resultSet;
-	final Object transferData;
+	final Map<String,Object> transferData;
 	
 	ModelData() {
 		this.modelName = null;
@@ -11,7 +13,7 @@ public class ModelData {
 		this.transferData = null;
 	}
 
-	ModelData(Object transferData){
+	ModelData(Map<String,Object> transferData){
 		this.modelName = null;
 		this.transferData = transferData;
 		this.resultSet = null;
@@ -23,13 +25,13 @@ public class ModelData {
 		this.transferData = null;
 	}	
 	
-	ModelData(String modelName, int viewParameter) {
+	ModelData(String modelName, Map<String,Object> viewParameter) {
 		this.modelName = modelName;
 		this.resultSet = null;
 		this.transferData = viewParameter;
 	}	
 	
-	ModelData(String modelName, ResultSet resultSet, int viewParameter) {
+	ModelData(String modelName, ResultSet resultSet, Map<String,Object> viewParameter) {
 		this.modelName = modelName;
 		this.resultSet = resultSet;
 		this.transferData = viewParameter;
