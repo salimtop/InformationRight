@@ -15,17 +15,35 @@ public class ApplicationFormModel implements ModelInterface{
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" Name,LastName,AF.ApplicationNumber,IsInformation,Request,DT.DeliveryType,Data,DaT.DataType ,PaymentAmount, PaymentExpire");
+        sql.append(" AF.ApplicationNumber,A.RelatedApplication, \n" +
+                "\t\tName,MiddleName,LastName,\n" +
+                "\t\tAPT.ApplierType, LegalPersonTitle,\n" +
+                "\t\tTurkishIdentity, CitizenFlag,\n" +
+                "\t\tTelephone,TT.TelephoneType,Fax, \n" +
+                "\t\tCAST(PaymentAmount  AS decimal(5,2)) AS PaymentAmount, \n "+
+                "Address, ADT.AddressType"+
+                ", PaymentExpire,\n" +
+                "\t\tRequest,\n" +
+                "\n" +
+                "\t\tIsInformation,\n" +
+                "\t\tDT.DeliveryType,Data,\n" +
+                "\t\tDaT.DataType ");
         sql.append(" FROM ApplicationForm AS AF INNER JOIN InformationAndDocument AS IAD\n" +
-                "        ON IAD.ApplicationNumber = AF.ApplicationNumber\n" +
-                "        INNER JOIN Applier AS APL\n" +
-                "        ON APL.ApplicationNumber = AF.ApplicationNumber\n" +
-                "        INNER JOIN DeliveryType AS DT\n" +
-                "        ON DT.DeliveryTypeId = AF.DesiredDeliveryType\n "+
-                "        INNER JOIN DataType AS DaT\n" +
-                "        ON DaT.DataTypeId = IAD.DataType\n"+
-                "        INNER JOIN Application A\n" +
-                "       ON A.ApplicationNumber = AF.ApplicationNumber\n" );
+                "   ON IAD.ApplicationNumber = AF.ApplicationNumber\n" +
+                "   INNER JOIN Applier AS APL\n" +
+                "   ON APL.ApplicationNumber = AF.ApplicationNumber\n" +
+                "   INNER JOIN DeliveryType AS DT\n" +
+                "   ON DT.DeliveryTypeId = AF.DesiredDeliveryType\n" +
+                "   INNER JOIN DataType AS DaT\n" +
+                "   ON DaT.DataTypeId = IAD.DataType\n" +
+                "   INNER JOIN Application A\n" +
+                "   ON A.ApplicationNumber = AF.ApplicationNumber\n" +
+                "   INNER JOIN ApplierType AS APT\n" +
+                "   ON APL.ApplierType = APT.ApplierTypeId\n"+
+                "   INNER JOIN TelephoneType TT\n" +
+                "   ON APL.TelephoneType = TT.TelephoneTypeId\n" +
+                "   INNER JOIN AddressType AS ADT\n" +
+                "   ON ADT.AddressTypeId = APL.AddressType");
 
 
         if((boolean) viewParameters.get("justAdmitted"))
@@ -120,7 +138,7 @@ public class ApplicationFormModel implements ModelInterface{
     }
 
     @Override
-    public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
+    public int update(Map<String, Object> parameters) throws Exception {
         return 0;
     }
 

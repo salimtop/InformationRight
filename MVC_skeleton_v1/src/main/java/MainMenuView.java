@@ -23,12 +23,11 @@ class MainMenuView implements ViewInterface {
 		
 		switch (choice.intValue()) {
 			case 1: return new ViewData("Applier","registerApplier");
-			case 2: operationName = "select.gui";	break;
+			case 2: return new ViewData("Inquiry","inquiry");
 			case 3: return new ViewData("Login", "login.gui", new HashMap<>());
 			default: return new ViewData(null, null);
 		}
-		
-		return new ViewData("Department", operationName, new HashMap<>());
+
 	}
 
 	@Override

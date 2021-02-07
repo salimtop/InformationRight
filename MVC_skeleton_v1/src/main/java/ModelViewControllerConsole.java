@@ -3,7 +3,7 @@ import java.util.*;
 
 public class ModelViewControllerConsole {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)  {
 		// Connect to database
 		connectToDatabase();
 
@@ -22,17 +22,29 @@ public class ModelViewControllerConsole {
 		router.put("TypeTable",new Controller(new TypeTableView(), new TypeTableModel()));
 		router.put("Admission",new Controller(new AdmissionView(), new AdmissionModel()));
 		router.put("Institution", new Controller(new InstitutionView(), new InstitutionModel()));
+		router.put("Respond",new Controller(new RespondView(),new RespondModel()));
+		router.put("Inquiry",new Controller(new InquiryView(), new InquiryModel()));
 
 		ViewData viewData = new ViewData("MainMenu", "");
 		do {
-			// Model, View, and Controller
-			Controller controller = router.get(viewData.functionName);
-			ModelData modelData = controller.executeModel(viewData);
-			viewData = controller.getView(modelData, viewData.functionName, viewData.operationName);
+			try {
 
-			System.out.println();
-			System.out.println("-------------------------------------------------");
-			System.out.println();
+				// Model, View, and Controller
+				Controller controller = router.get(viewData.functionName);
+				ModelData modelData = null;
+
+				modelData = controller.executeModel(viewData);
+
+				viewData = controller.getView(modelData, viewData.functionName, viewData.operationName);
+
+				System.out.println();
+				System.out.println("-------------------------------------------------");
+				System.out.println();
+			} catch (Exception e) {
+				e.printStackTrace();
+				viewData = new ViewData("MainMenu", "");
+
+			}
 		}
 		while (viewData.functionName != null);
 

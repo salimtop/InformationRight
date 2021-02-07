@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,13 +58,22 @@ public class ApplierView implements ViewInterface{
             choice = getInteger("1 - Citizen\n2 - Foreign\nChoice :", false);
         }while(choice != 1 && choice != 2);
 
-        Double turkishIdentity = null;
+        BigDecimal turkishIdentity = null;
         Boolean citizenFlag = false;
 
-        if(choice == 1){
-            turkishIdentity = getDouble("Enter Turkish ID : ",false);
-            citizenFlag = true;
+
+        if(choice == 1) {
+            boolean validTc = true;
+            do{
+                Double tc = getDouble("Enter Turkish ID : ", false);
+
+                validTc = tc % 2 == 0 ? true : false;
+                turkishIdentity = new BigDecimal(tc,MathContext.DECIMAL64);
+                citizenFlag = true;
+                System.out.println(""+turkishIdentity.toString());
+            }while( ! validTc || 11 != turkishIdentity.toString().length());
         }
+
 
         HashMap<Integer, Object> applierTypes = TypeTable.showType("ApplierType");
 
@@ -89,7 +100,7 @@ public class ApplierView implements ViewInterface{
             addressType = getInteger("Enter Address Type :",false);
         }while(!addressTypes.containsKey(addressType));
 
-        Double telephone = getDouble("Telephone: ",true);
+        Double telephone = getDouble("Telephone: ",false);
 
         HashMap<Integer, Object> telephoneTypes = TypeTable.showType("TelephoneType");
 
@@ -107,7 +118,7 @@ public class ApplierView implements ViewInterface{
         person.setName(name);
         person.setMiddleName(middleName);
         person.setLastName(lastName);
-        person.setTurkishIdentity(turkishIdentity);
+        person.setTurkishIdentity(turkishIdentity == null ? null : turkishIdentity.doubleValue());
         person.setCitizenFlag(citizenFlag);
         person.setApplierType(applierType);
         person.setTitle(title);

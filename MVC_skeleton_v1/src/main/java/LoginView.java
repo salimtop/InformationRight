@@ -38,7 +38,7 @@ public class LoginView implements ViewInterface{
                 String title = resultSet.getString("title");
                 String department = resultSet.getString("InstitutionName");
                 Integer departmentId = resultSet.getInt("InstitutionId");
-                Date lastLogin = resultSet.getDate("LastLogin");
+                String lastLogin = resultSet.getTimestamp("LastLogin").toString();
                 Integer personalId = resultSet.getInt("PersonalId");
 
                 // Display values
@@ -69,8 +69,8 @@ public class LoginView implements ViewInterface{
 
 
     Map<String, Object> getWhereParameters() throws Exception {
-        String username = "salimtop";//getString("Username : ", false);
-        String password = "1234";//getString("Password : ", false);
+        String username = getString("Username : ", false);
+        String password = getString("Password : ", false);
 
         Map<String, Object> whereParameters = new HashMap<>();
         if (username != null) whereParameters.put("username", username);

@@ -24,6 +24,9 @@ public class InstitutionView implements ViewInterface {
         Map<String,Object> parameters = new HashMap<String,Object>();
 
         ResultSet result = modelData.resultSet;
+
+        Map<Integer,Institution> institutionList = new HashMap<Integer,Institution>();
+
         Integer institutionId = null;
         String institutionName = null;
         String address = null;
@@ -49,6 +52,8 @@ public class InstitutionView implements ViewInterface {
             row[3] = String.valueOf(superior);
             row[4] = String.valueOf(address);
 
+            institutionList.put(institutionId,new Institution(institutionId,institutionName,address,telephone,superior));
+
             table.add(row);
         }
 
@@ -59,6 +64,7 @@ public class InstitutionView implements ViewInterface {
             String function = (String) modelData.transferData.get("redirectFunction");
             String operation = (String) modelData.transferData.get("redirectOperation");
             modelData.transferData.put("institutionFlag",true);
+            modelData.transferData.put("institutionList",institutionList);
             return new ViewData(function,operation,modelData.transferData);
         }
 

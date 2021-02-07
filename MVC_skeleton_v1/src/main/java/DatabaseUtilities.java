@@ -8,7 +8,7 @@ class DatabaseUtilities {
 	private static Connection connection = null;
 	public static String host;
 	public static String databaseName;
-	public static boolean monitoring = true;
+	public static boolean monitoring = false;
 	
 	private DatabaseUtilities() {
 		
@@ -84,7 +84,7 @@ class DatabaseUtilities {
 				
 				if (value instanceof String && !value.toString().contains("NULL")) {
 					preparedStatement.setString(i + 1, (String)value);
-				}			
+				}
 			}
 		}
 	}

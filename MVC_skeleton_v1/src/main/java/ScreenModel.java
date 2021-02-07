@@ -44,7 +44,7 @@ public class ScreenModel implements ModelInterface {
     }
 
     @Override
-    public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
+    public int update(Map<String, Object> parameters) throws Exception {
         return 0;
     }
 

@@ -87,8 +87,54 @@ public class AdmissionModel implements ModelInterface{
     }
 
     @Override
-    public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
-        return 0;
+    public int update(Map<String, Object> parameters) throws Exception {
+        Map<String, Object> updateParameters = (Map<String, Object>)(parameters.get("updateParameters"));
+        Map<String, Object> whereParameters = (Map<String, Object>)(parameters.get("whereParameters"));
+
+        // construct SQL statement
+        StringBuilder sql = new StringBuilder();
+
+        if(parameters.containsKey("updateChoice") && parameters.get("updateChoice").equals("forwardUpdate")){
+            sql.append("\n BEGIN TRAN" +
+                    " INSERT INTO Admission (AdmittedBy,ApplicationNumber,AdmissionDate) \n"+
+                    " VALUES ("+
+                    parameters.get("forwardInstitution")+","+
+                    whereParameters.get("applicationNumber")+", "+
+                    "CONVERT(DATE, CURRENT_TIMESTAMP) "+")\n"
+            );
+
+            sql.append(
+                    "UPDATE Application SET ExpireDate = CONVERT(DATE, DATEADD(DAY,15,CURRENT_TIMESTAMP))\n" +
+                            "WHERE ApplicationNumber = "+whereParameters.get("applicationNumber")
+            );
+        }
+
+
+        sql.append(" UPDATE Admission SET ");
+        int appendCount = 0;
+        for (Map.Entry<String, Object> entry : updateParameters.entrySet()) {
+
+            sql.append(entry.getKey() + " = " + DatabaseUtilities.formatField(entry.getValue()));
+            if (++appendCount < updateParameters.size()) {
+                sql.append(", ");
+            }
+        }
+        List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
+        sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
+
+        sql.append(" COMMIT");
+        if(DatabaseUtilities.monitoring)
+            System.out.println(sql.toString());
+
+
+        // execute constructed SQL statement
+        Connection connection = DatabaseUtilities.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+        DatabaseUtilities.setWhereStatementParameters(preparedStatement, whereParameterList);
+        int rowCount = preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+        return rowCount;
     }
 
     @Override

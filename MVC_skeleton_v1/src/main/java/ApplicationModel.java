@@ -91,7 +91,12 @@ public class ApplicationModel implements ModelInterface{
 
 
     @Override
-    public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
+    public int update(Map<String, Object> parameters) throws Exception {
+
+        Map<String, Object> updateParameters = (Map<String, Object>)(parameters.get("updateParameters"));
+        Map<String, Object> whereParameters = (Map<String, Object>)(parameters.get("whereParameters"));
+
+
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" UPDATE Application SET ");

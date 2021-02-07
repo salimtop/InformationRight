@@ -1,4 +1,3 @@
-import javax.swing.text.View;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -13,15 +12,28 @@ public class AdmissionView implements ViewInterface {
         switch(operationName){
             case "listAssigned" : return personnelGUI(modelData);//
             case "listApplication" : return sendListRequest(modelData);
+            case "forwardApplication" : return forwardApplication(modelData);
             case "select" : return listApplication(modelData);
             case "admit" : return admitApplication(modelData);
             case "insert" : return insertResult(modelData);
+            case "update" : return updateResult(modelData);
         }
 
         return null;
     }
 
-    private ViewData personnelGUI(ModelData modelData) throws ParseException {
+    private ViewData updateResult(ModelData modelData) {
+        //redirect if another process requests
+        if(modelData.transferData.containsKey("redirectFunction")){
+            modelData.transferData.put("updateAdmissionFlag",true);
+            String function = (String) modelData.transferData.get("redirectFunction");
+            String operation = (String) modelData.transferData.get("redirectOperation");
+            return new ViewData(function,operation,modelData.transferData);
+        }
+        return new ViewData("MainMenu","");
+    }
+
+    private ViewData personnelGUI(ModelData modelData) throws Exception {
         Map<String,Object> parameters = modelData.transferData == null ? new HashMap() : modelData.transferData;
 
         Map<String,Object> types = TypeTable.types;
@@ -43,8 +55,7 @@ public class AdmissionView implements ViewInterface {
         System.out.println("1 - Show Application Details");
         System.out.println("2 - Enter Respond");
         System.out.println("3 - Forward");
-        System.out.println("4 - Charge Fee");
-        System.out.println("5 - Main Menu");
+        System.out.println("4 - Main Menu");
         do {
             choice = getInteger("Enter choice : ",false);
         }while(choice < 1 || choice > 5);
@@ -52,40 +63,80 @@ public class AdmissionView implements ViewInterface {
         switch(choice){
             case 1 : return getApplicationForm(parameters,"listAssigned");
             case 2 : return respondApplication(modelData);
-            case 3 : forwardApplication(modelData); break;
-            case 4 : chargeApplication(modelData); break;
-            case 5 : return new ViewData("Screen","screen.gui");
+            case 3 : return forwardApplication(modelData);
+            case 4 : return new ViewData("Screen","screen.gui");
         }
 
         return new ViewData("Admission","listAssigned");
     }
 
-    private void chargeApplication(ModelData modelData) {
-        System.out.println("ApplicationCharge");
-        return;
+
+    private ViewData forwardApplication(ModelData modelData) throws ParseException {
+        Application application = null;
+        if(! modelData.transferData.containsKey("application")){
+            application = getAssignedApplication(modelData);
+            modelData.transferData.put("application",application);
+        }
+        else
+            application = (Application) modelData.transferData.get("application");
+
+        if(application == null)
+            new ViewData("Admission","listAssigned");
+
+        if( !modelData.transferData.containsKey("institutionFlag")){
+            modelData.transferData.put("redirectFunction","Admission");
+            modelData.transferData.put("redirectOperation","forwardApplication");
+            return new ViewData("Institution","select",modelData.transferData);
+        }
+
+        Institution institution = getForwardInstitution(modelData);
+        if(institution == null)
+            return new ViewData("Admission","listAssigned");
+
+        Map<String,Object> parameters = new HashMap<>();
+        Map<String,Object> updateParameters = new HashMap<>();
+        Map<String,Object> whereParameters = new HashMap<>();
+
+        updateParameters.put("forwardedTo",institution.institutionId);
+        whereParameters.put("admittedBy",Login.getInstitutionId());
+        whereParameters.put("applicationNumber",application.applicationNumber);
+
+        parameters.put("updateChoice","forwardUpdate");
+        parameters.put("forwardInstitution",institution.institutionId);
+
+        parameters.put("redirectFunction","Admission");
+        parameters.put("redirectOperation","listAssigned");
+        parameters.put("updateParameters",updateParameters);
+        parameters.put("whereParameters",whereParameters);
+
+        return new ViewData("Admission","update",parameters);
     }
 
-    private void forwardApplication(ModelData modelData) {
-        System.out.println("ApplicationForward");
-        return;
-    }
+    private Institution getForwardInstitution(ModelData modelData) throws ParseException {
 
-    private ViewData respondApplication(ModelData modelData) throws ParseException {
-
-        Map<Integer,Application> applicationList = (Map<Integer, Application>) modelData.transferData.get("applicationList");
-        Integer applicationNumber;
+        Map<Integer,Institution> institutionList = (Map<Integer, Institution>) modelData.transferData.get("institutionList");
+        Integer institutionId;
         boolean isContain = false;
         do{
-            applicationNumber = getInteger("Enter application number : ",false);
-            if(applicationNumber == null)
-                return new ViewData("listAssigned","listAssigned");
-            if(applicationList.containsKey(applicationNumber))
+            institutionId = getInteger("Enter institution number : ",true);
+            if(institutionId == null)
+                return null;
+            if(institutionList.containsKey(institutionId))
                 isContain = true;
             else
-                System.out.println("Application not found!");
+                System.out.println("Institution not found!");
         }while( ! isContain);
 
-        Application application = applicationList.get(applicationNumber);
+        Institution institution = institutionList.get(institutionId);
+
+        return institution;
+
+    }
+
+    private ViewData respondApplication(ModelData modelData) throws Exception {
+        Application application = getAssignedApplication(modelData);
+        if(application == null)
+            new ViewData("Admission","listAssigned");
 
         System.out.println("1 - Change Status");
         System.out.println("2 - Enter Respond");
@@ -98,18 +149,49 @@ public class AdmissionView implements ViewInterface {
         switch(choice){
             case 1 : return changeStatusGUI(modelData,application);
             case 2 : return enterRespondGUI(modelData,application);
-
+            case 3 : return new ViewData("Admission","listAssigned",modelData.transferData);
         }
 
-
-        return null;
+        return new ViewData("Screen","screen.gui");
     }
 
-    private ViewData enterRespondGUI(ModelData modelData, Application application) {
+    private Application getAssignedApplication(ModelData modelData) throws ParseException {
+        Map<Integer,Application> applicationList = (Map<Integer, Application>) modelData.transferData.get("applicationList");
+        Integer applicationNumber;
+        boolean isContain = false;
+        do{
+            applicationNumber = getInteger("Enter application number : ",false);
+            if(applicationNumber == null)
+                return null;
+            if(applicationList.containsKey(applicationNumber))
+                isContain = true;
+            else
+                System.out.println("Application not found!");
+        }while( ! isContain);
+
+        Application application = applicationList.get(applicationNumber);
+
+        return application;
+    }
 
 
+    private ViewData enterRespondGUI(ModelData modelData, Application application) throws Exception {
+        String response = null;
 
-        return null;
+        Map<String,Object> parameters = modelData.transferData;
+
+        response = getString("Enter response :",true);
+        if(response == null)
+            new ViewData("Admission","listAssigned",modelData.transferData);
+
+
+        Respond respond = new Respond(application.applicationNumber,response,null,Login.getInstitutionId());
+
+        parameters.put("Respond",respond);
+        parameters.put("RespondFieldName",Respond.getFieldNames());
+        parameters.put("redirectFunction","Admission");
+        parameters.put("redirectOperation","listAssigned");
+        return new ViewData("Respond","insert", parameters);
     }
 
     private ViewData changeStatusGUI(ModelData modelData,Application application) throws ParseException {
@@ -138,6 +220,7 @@ public class AdmissionView implements ViewInterface {
         Map<String,Object> whereParameters = new HashMap<String,Object>();
 
         updateParameters.put("StatusType",choice);
+        updateParameters.put("RejectionType",null);
         updateParameters.put("PaymentAmount",charge);
         updateParameters.put("PaymentExpire",expire);
         whereParameters.put("ApplicationNumber",application.applicationNumber);
@@ -156,18 +239,16 @@ public class AdmissionView implements ViewInterface {
             getString("Press enter to continue",true);
             return new ViewData("Admission","listAssigned",modelData.transferData);
         }
-        Map<Integer,Object> statusType = TypeTable.showType("RejectionType");
+        Integer rejectionType;
 
-        if(statusType == null) {
-            modelData.transferData.put("redirectFunction", "Admission");
-            modelData.transferData.put("redirectOperation", "rejectGUI");
-        }
-
-        Integer choice;
-
+        Map<Integer,Object> rejectTypes = TypeTable.showType("RejectionType");
         do{
-            choice = getInteger("Enter choice",false);
-        }while( ! statusType.containsKey(choice));
+              rejectionType = getInteger("Enter choice :",false);
+        }while( ! rejectTypes.containsKey(rejectionType));
+        application.setRejectionType(rejectionType);
+
+        modelData.transferData.put("redirectFunction", "Admission");
+        modelData.transferData.put("redirectOperation", "loadAssigned");
 
         return setStatus(modelData,code,application);
     }
@@ -178,6 +259,7 @@ public class AdmissionView implements ViewInterface {
         Map<String,Object> whereParameters = new HashMap<String,Object>();
 
         updateParameters.put("StatusType",code);
+        updateParameters.put("RejectionType",application.rejectionType);
         whereParameters.put("ApplicationNumber",application.applicationNumber);
 
         parameters.put("updateParameters",updateParameters);
@@ -302,6 +384,7 @@ public class AdmissionView implements ViewInterface {
 
         Map<String, Object> whereParameters = new HashMap<>();
         whereParameters.put("AdmittedBy",Login.getInstitutionId());
+        whereParameters.put("forwardedTo","IS NULL");
         return whereParameters;
     }
 
@@ -317,7 +400,7 @@ public class AdmissionView implements ViewInterface {
 
             //to print
             ArrayList<String[]> table = new ArrayList<>();
-            table.add(new String[]{"Application Number","Status","Mandatory","Expire Date",	"Application Date",	"Admitted By","PaymentAmount","PaymentExpire"});
+            table.add(new String[]{"Application Number","Status","Mandatory","Expire Date",	"Application Date",	"Admitted By","Payment Amount","PaymentExpire"});
 
             Integer applicationNumber = null;
             Integer payment = null;
@@ -346,7 +429,7 @@ public class AdmissionView implements ViewInterface {
                 row[3] = String.valueOf(expireDate);
                 row[4] = String.valueOf(applicationDate);
                 row[5] = String.valueOf(admittedBy);
-                row[6] = String.valueOf(payment == null ? "None" : payment);
+                row[6] = String.valueOf(payment == null ? "None" : payment + "₺");
                 row[7] = String.valueOf(paymentExpire == null ? "None" : paymentExpire);
 
                 table.add(row);

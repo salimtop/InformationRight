@@ -20,11 +20,12 @@ public class LoginModel implements ModelInterface {
                     "INNER JOIN Personal AS P "+
                     "ON U.PersonalId = P.PersonalId "+
                     "INNER JOIN Institution AS I " +
-                    "ON P.Department = I.InstitutionId ");
+                    "ON P.Department = I.InstitutionId \n");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));
 
+        String lastLogin = " UPDATE UserInformation SET LastLogin = CONVERT(smalldatetime,CURRENT_TIMESTAMP) WHERE Username = ?";
         if(DatabaseUtilities.monitoring)
             System.out.println(sql.toString() + "\n");
 
@@ -32,8 +33,11 @@ public class LoginModel implements ModelInterface {
         // execute constructed SQL statement
         Connection connection = DatabaseUtilities.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+        PreparedStatement lastLoginUpdate = connection.prepareStatement(lastLogin);
         DatabaseUtilities.setWhereStatementParameters(preparedStatement, whereParameterList);
+        lastLoginUpdate.setString(1, (String) whereParameters.get("username"));
         ResultSet result = preparedStatement.executeQuery();
+        lastLoginUpdate.executeUpdate();
 
         return result;
     }
@@ -44,7 +48,7 @@ public class LoginModel implements ModelInterface {
     }
 
     @Override
-    public int update(Map<String, Object> updateParameters, Map<String, Object> whereParameters) throws Exception {
+    public int update(Map<String, Object> parameters) throws Exception {
         return 0;
     }
 

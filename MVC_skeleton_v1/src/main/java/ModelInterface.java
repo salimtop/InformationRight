@@ -8,7 +8,7 @@ interface ModelInterface {
 	
 	abstract Integer insert(Map<String,Object> insertParameters) throws Exception;
 
-	abstract int update(Map<String,Object> updateParameters, Map<String,Object> whereParameters) throws Exception;
+	abstract int update(Map<String,Object> parameters) throws Exception;
 
 	abstract int delete(Map<String,Object> whereParameters) throws Exception;
 	
@@ -29,19 +29,17 @@ interface ModelInterface {
 
 				Integer lastID = insert(viewData.viewParameters);
 
-				Map<String,Object> parameters = new HashMap<String,Object>();
+				Map<String,Object> parameters = viewData.viewParameters;
 				parameters.put("lastId",lastID);
 
 				return new ModelData(viewData.functionName, parameters);
 			}
 			case "update":
 			{
-				Map<String, Object> updateParameters = (Map<String, Object>)(viewData.viewParameters.get("updateParameters"));
-				Map<String, Object> whereParameters = (Map<String, Object>)(viewData.viewParameters.get("whereParameters"));
-				
-				int recordCount = update(updateParameters, whereParameters);
 
-				Map<String,Object> parameters = new HashMap<String,Object>();
+				int recordCount = update(viewData.viewParameters);
+
+				Map<String,Object> parameters = viewData.viewParameters;
 				parameters.put("recordCount",recordCount);
 				
 				return new ModelData(viewData.functionName, parameters);

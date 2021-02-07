@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -23,46 +24,63 @@ public class ApplicationFormView implements ViewInterface {
     }
 
     private ViewData showApplicationForm(ModelData modelData) throws SQLException, ParseException {
+
         ResultSet result = modelData.resultSet;
-        Integer applicationNumber = null;
-        Integer payment = null;
+        String name = null, middleName = null, lastName = null;
+        BigDecimal tc = null;
+        Integer applicationNumber = null, relatedApplication = null;
+        String applierType = null, title = null;
+        Double payment = null;
         Date paymentExpire = null;
-
-
+        String request = null, telephone = null,telephoneType = null, fax = null;
+        String address =null, addressType = null;
+        
+        
         ArrayList<String[]> table = new ArrayList<String[]>();
 
-
-        table.add(new String[]{"Name","Last Name","Information&Document","request","Delivery Type","DataType","Data"});
+        table.add(new String[]{"Information&Document","Delivery Type","DataType","Data"});
 
         while(result.next()){
             String[] row = new String[table.get(0).length];
 
             applicationNumber = result.getInt("ApplicationNumber");
-            String name = result.getString("Name");
-            String lastName = result.getString("LastName");
+            name = result.getString("Name");
+            lastName = result.getString("LastName");
+            tc = result.getBigDecimal("turkishIdentity");
+            applierType = result.getString("ApplierType");
             Boolean isInformation = result.getBoolean("IsInformation");
-            String request = result.getString("Request");
+            request = result.getString("Request");
             String deliveryType = result.getString("DeliveryType");
             String data = result.getString("Data");
             String dataType = result.getString("DataType");
-            payment = result.getInt("PaymentAmount");
+            payment = result.getDouble("PaymentAmount");
             paymentExpire = result.getDate("PaymentExpire");
-
-            row[0] = name;
-            row[1] = lastName;
-            row[2] = (isInformation  ? "Information" : "Document");
-            row[3] = request;
-            row[4] = deliveryType;
-            row[5] = dataType;
-            row[6] = data;
+            relatedApplication = result.getInt("RelatedApplication");
+            address = result.getString("Address");
+            addressType = result.getString("AddressType");
+            fax = result.getString("fax");
+            telephone = result.getBigDecimal("Telephone").toString();
+            telephoneType = result.getString("TelephoneType");
 
 
+
+            row[0] = (isInformation  ? "Information" : "Document");
+            row[1] = deliveryType;
+            row[2] = dataType;
+            row[3] = data;
             table.add(row);
 
         }
-        System.out.println("Application number :"+applicationNumber);
-        System.out.println("Charge :"+payment+(payment == 0 ? "" : "Expire :"+paymentExpire));
-        DatabaseUtilities.printTable(table,true);
+
+        System.out.println("Application number :"+applicationNumber+(relatedApplication == 0 ? "" : "\tRelated Application :"+ relatedApplication));
+        System.out.println((tc != null ? "Turkish Identity :"+tc : "Foreign"));
+        System.out.println("Name Surname : "+ name+" "+(middleName == null ? "" : middleName)+" "+lastName);
+        System.out.println(applierType + (title == null ? "" : "/"+title));
+        System.out.println("Telephone/Fax:\t"+ telephone+"("+telephoneType+") "+ (fax == null?"":fax));
+        System.out.println(addressType+" Address :"+address);
+        System.out.println("Charge :"+payment+(payment == 0 ? "" : "\tExpire :"+paymentExpire));
+        System.out.println("Request :"+request);
+        DatabaseUtilities.printTable(table,false);
         getString("Press enter to continue",true);
 
         //redirect if another process requests
@@ -173,7 +191,7 @@ public class ApplicationFormView implements ViewInterface {
 
             isInformation = choice == 1 ? true : false;
 
-            data = getString("Requested data : ", true);
+            data = getString("Requested data : ", false);
 
             //adds requested data to list of ApplicationForm
             applicationForm.dataList.add(new ApplicationForm.InformationAndDocument(applicationForm.applicationNumber,data,isInformation,dataType));

@@ -12,6 +12,7 @@ public class Application {
     Integer paymentAmount;
     Date paymentExpire;
     Integer relatedApplication;
+    Integer rejectionType;
 
 
     public Application(Integer applicationNumber, Integer status, Boolean mandatory, Integer admissionDeliveryType, Date applicationDate, Date expireDate, Integer paymentAmount, Date paymentExpire, Integer relatedApplication) {
@@ -79,6 +80,14 @@ public class Application {
         System.out.println("5 - Application Expire Date");
         System.out.println("6 - Admitted By");
 
+    }
+
+    public Integer getRejectionType() {
+        return rejectionType;
+    }
+
+    public void setRejectionType(Integer rejectionType) {
+        this.rejectionType = rejectionType;
     }
 
     public void setApplicationNumber(Integer applicationNumber) {
