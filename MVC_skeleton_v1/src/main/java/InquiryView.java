@@ -38,6 +38,7 @@ public class InquiryView implements ViewInterface{
 
         if(result != null){
             ArrayList<String[]> table = new ArrayList<>();
+            String rejectionType = null;
 
             if(parameters.get("inquiryType").equals("applicationDetails")){
                 table.add(new String[]{"Application Code", "Status" , "Mandatory", "Delivered",
@@ -54,17 +55,21 @@ public class InquiryView implements ViewInterface{
                     row[5] = String.valueOf(result.getDate("ExpireDate"));
                     row[6] = String.valueOf(result.getDouble("PaymentAmount"));
                     row[7] = String.valueOf(result.getDate("PaymentExpire"));
-
+                    rejectionType = result.getString("RejectionType");
                     table.add(row);
                 }
                 DatabaseUtilities.printTable(table,false);
                 getString("Press enter to continue",true);
                 parameters.put("inquiryType","respondDetails");
+                if(rejectionType != null)
+                    parameters.put("rejectionType",rejectionType);
 
                 return new ViewData("Inquiry","select",parameters);
             }
             else if(parameters.get("inquiryType").equals("respondDetails")){
                 System.out.println("Application progress ");
+                if(parameters.containsKey("rejectionType"))
+                    rejectionType = (String) parameters.get("rejectionType");
                 table.add(new String[]{"Response" , "Response Date", "Admitted By", "Admission Date"});
                 while( result.next()){
                     String[] row = new String[table.get(0).length];
@@ -76,6 +81,8 @@ public class InquiryView implements ViewInterface{
                     table.add(row);
                 }
                 DatabaseUtilities.printTable(table,false);
+                if(rejectionType != null )
+                    System.out.println("Rejected because of : "+rejectionType);
                 getString("Press enter to continue",true);
             }
 

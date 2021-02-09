@@ -15,13 +15,13 @@ public class ApplicationModel implements ModelInterface{
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
 
-        sql.append(" AP.ApplicationNumber, S.StatusType, MandatoryFlag, ExpireDate , ApplicationDate,I.InstitutionName AS AdmittedBy ");
-        sql.append(" FROM Application AS AP LEFT OUTER JOIN Admission AS AD \n" +
-                "            ON AP.ApplicationNumber = AD.ApplicationNumber \n" +
-                "        INNER JOIN StatusType AS S \n" +
-                "            ON AP.StatusType = S.StatusTypeID \n" +
-                "        LEFT OUTER JOIN Institution AS I \n" +
-                "            ON AD.AdmittedBy = I.InstitutionId ");
+        sql.append(" A.ApplicationNumber, S.StatusType, MandatoryFlag, ExpireDate , ApplicationDate,\n" +
+                "(SELECT TOP 1 I.InstitutionName \n" +
+                "FROM Admission AS AD INNER JOIN Institution AS I ON AD.AdmittedBy = I.InstitutionId\n" +
+                "WHERE ApplicationNumber = A.ApplicationNumber ORDER BY AdmissionDate DESC) AS AdmittedBy\n");
+        sql.append(" FROM Application AS A\n" +
+                "INNER JOIN StatusType AS S\n" +
+                "ON A.StatusType = S.StatusTypeID ");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));

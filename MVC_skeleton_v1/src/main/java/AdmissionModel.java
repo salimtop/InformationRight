@@ -61,7 +61,7 @@ public class AdmissionModel implements ModelInterface{
         for (int j=0; j<fieldList.length; j++) {
             String fieldName = fieldList[j].trim();
             if(fieldName.equals("admissionDate"))
-                sqlAdmission.append(" CONVERT(DATE, CURRENT_TIMESTAMP) ");
+                sqlAdmission.append(" CONVERT(smalldatetime,CURRENT_TIMESTAMP) ");
             else
                 sqlAdmission.append(DatabaseUtilities.formatField(admission.getByName(fieldName)));
 

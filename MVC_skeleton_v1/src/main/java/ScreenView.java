@@ -13,7 +13,8 @@ public class ScreenView implements ViewInterface {
         switch(operationName){
             case "screen.gui": return screenMenu(modelData);
             case "loadScreen" : return loadScreen(modelData);
-            case "select": return getScreen(modelData);
+            case "select" : return getScreen(modelData);
+            case "logout" :  return logout(modelData);
 
             //Database screens
             case "newApplication" : return new ViewData("Applier","registerApplier",modelData.transferData);
@@ -23,7 +24,7 @@ public class ScreenView implements ViewInterface {
             case "showInstitution" : //transfer data contains arrive point of data
                 return new ViewData("Institution","select",transferData == null ? new HashMap<>() : transferData );
             case "admitApplication" : return new ViewData("Admission","admit", (Map<String, Object>) modelData.transferData);
-
+            case "seeReport" : return new ViewData("Report","select");
 
         }
 
@@ -31,8 +32,11 @@ public class ScreenView implements ViewInterface {
         return new ViewData(null,null);
     }
 
-    private void newApplicationGUI() {
+    private ViewData logout(ModelData modelData) {
+        Login.logout();
+        return new ViewData("MainMenu","");
     }
+
 
     private ViewData loadScreen(ModelData modelData) throws Exception {
 
@@ -58,7 +62,7 @@ public class ScreenView implements ViewInterface {
 
                 allScreens.put(screenNumber++,screen);
             }
-            allScreens.putIfAbsent(screenNumber,"Quit");
+            allScreens.putIfAbsent(screenNumber,"logout");
             resultSet.close();
 
             Login.setScreen(allScreens);
@@ -77,6 +81,7 @@ public class ScreenView implements ViewInterface {
             System.out.println("Authentication error! ");
             return new ViewData("Login", "loadScreen");
         }
+
         int i = 1;
         for(i = 1; i <= screen.size(); i++)
             System.out.println(""+i+" "+Screen.getByColumnName(screen.get(i)));

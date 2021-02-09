@@ -38,18 +38,22 @@ public class AdmissionView implements ViewInterface {
 
         Map<String,Object> types = TypeTable.types;
 
+        //go list application and go back here
         if(types == null) {
             parameters.put("redirectFunction", "Admission");
             parameters.put("redirectOperation", "listAssigned");
             return new ViewData("TypeTable","loadChoice",parameters);
         }
 
+        //accept listed applications
         boolean redirectedToMe = false;
         if( parameters.containsKey("listApplicationFlag") )
             redirectedToMe = parameters.get("redirectFunction").equals("Admission") && parameters.get("redirectOperation").equals("listAssigned");
         parameters.remove("listApplicationFlag");
         if( ! redirectedToMe)
             return getApplicationList(parameters,"listAssigned");
+
+
 
         Integer choice;
         System.out.println("1 - Show Application Details");
@@ -182,7 +186,7 @@ public class AdmissionView implements ViewInterface {
 
         response = getString("Enter response :",true);
         if(response == null)
-            new ViewData("Admission","listAssigned",modelData.transferData);
+            return new ViewData("Admission","listAssigned");
 
 
         Respond respond = new Respond(application.applicationNumber,response,null,Login.getInstitutionId());

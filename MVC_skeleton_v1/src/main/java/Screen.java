@@ -10,6 +10,8 @@ public class Screen {
             case "admitApplication" : return "Admit Application";
             case "showApplication" : return "Show Application";
             case "showInstitution" : return "Show Institutions";
+            case "seeReport" : return "See Report";
+            case "logout" : return "Log out";
             case "Quit" : return "Quit";
         }
         System.out.println(columnName);

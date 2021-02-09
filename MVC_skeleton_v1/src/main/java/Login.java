@@ -46,6 +46,11 @@ public class Login {
         return instance;
     }
 
+    public static void logout(){
+       instance = null;
+
+    }
+
 
     public static boolean active(){
        if(instance == null)
