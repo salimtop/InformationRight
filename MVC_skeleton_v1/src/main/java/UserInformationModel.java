@@ -43,10 +43,11 @@ public class UserInformationModel implements ModelInterface{
             }
         }
 
+        sql.append("COMMIT");
+
         if(DatabaseUtilities.monitoring)
             System.out.println(sql.toString());
 
-        sql.append("COMMIT");
         // execute constructed SQL statement
         //Insert
         Connection connection = null;

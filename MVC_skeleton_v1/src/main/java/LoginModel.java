@@ -15,7 +15,7 @@ public class LoginModel implements ModelInterface {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append("	Username, Password,Name,Surname, Title,InstitutionName,InstitutionId, U.PersonnelId, LastLogin  ");
+        sql.append("	Username,  Password,Name,Surname, Title,InstitutionName,InstitutionId, U.PersonnelId, LastLogin  ");
         sql.append(" FROM UserInformation AS U "+
                     "INNER JOIN Personnel AS P "+
                     "ON U.PersonnelId = P.PersonnelId "+

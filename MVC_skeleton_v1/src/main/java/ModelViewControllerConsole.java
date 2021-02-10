@@ -43,8 +43,8 @@ public class ModelViewControllerConsole {
 				System.out.println("-------------------------------------------------");
 				System.out.println();
 			} catch (Exception e) {
-				//e.printStackTrace();
-				System.out.println("Error occurred: "+e);
+				e.printStackTrace();
+				//System.out.println("Error occurred: "+e);
 				viewData = new ViewData("MainMenu", "");
 
 			}

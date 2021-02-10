@@ -72,9 +72,11 @@ public class LoginView implements ViewInterface{
         String username = getString("Username : ", false);
         String password = getString("Password : ", false);
 
+        String encryptedPassword = AES.encrypt(password, AES.ENCRYPT_KEY) ;
+
         Map<String, Object> whereParameters = new HashMap<>();
         if (username != null) whereParameters.put("username", username);
-        if (password != null) whereParameters.put("password", password);
+        if (password != null) whereParameters.put("password", encryptedPassword);
 
         return whereParameters;
     }

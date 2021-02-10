@@ -12,7 +12,7 @@ public class UserInformationView implements ViewInterface {
         switch (operationName){
             case "addUser" : return addUserGUI(modelData);
             case "select" : return listNonUser(modelData);
-            case "insert" : return insertResponse(modelData);
+            case "insert" : return insertResult(modelData);
 
         }
         return null;
@@ -68,7 +68,7 @@ public class UserInformationView implements ViewInterface {
         return new ViewData("Login","login.gui");
     }
 
-    private ViewData insertResponse(ModelData modelData) throws ParseException {
+    private ViewData insertResult(ModelData modelData) throws ParseException {
         Integer dbResponse = (Integer) modelData.transferData.get("lastId");
 
         if(dbResponse == null)
@@ -119,18 +119,20 @@ public class UserInformationView implements ViewInterface {
                 System.out.println("Passwords do not match. Enter again");
         }while(! match);
 
+        String encryptedPassword = AES.encrypt(password, AES.ENCRYPT_KEY) ;
+
         Map<String,Object> insertParameters = new HashMap<String,Object>();
 
         String authorityChoice = getString("Press 'A' to add authority. (Enter to continue) :",true);
 
-        if(authorityChoice.equalsIgnoreCase("A")){
+        if(authorityChoice != null && authorityChoice.equalsIgnoreCase("A")){
             ArrayList<Integer> authority = giveAuthority();
             insertParameters.put("authority",authority);
         }
 
         insertParameters.put("personnelId",personnelId);
         insertParameters.put("username",username);
-        insertParameters.put("password",password);
+        insertParameters.put("password",encryptedPassword);
         return new ViewData("UserInformation","insert",insertParameters);
     }
 
