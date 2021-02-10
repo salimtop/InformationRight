@@ -13,7 +13,6 @@ public class ModelViewControllerConsole {
 		Map<String, Controller> router = new HashMap<>();
 
 		router.put("MainMenu", new Controller(new MainMenuView(), new NopModel()));
-		router.put("Department", new Controller(new DepartmentView(), new DepartmentModel()));
 		router.put("Login", new Controller(new LoginView(), new LoginModel()));
 		router.put("Screen",new Controller(new ScreenView(), new ScreenModel() ));
 		router.put("Application",new Controller(new ApplicationView(),new ApplicationModel()));
@@ -44,8 +43,8 @@ public class ModelViewControllerConsole {
 				System.out.println("-------------------------------------------------");
 				System.out.println();
 			} catch (Exception e) {
-				e.printStackTrace();
-				//System.out.println("Error occurred: "+e);
+				//e.printStackTrace();
+				System.out.println("Error occurred: "+e);
 				viewData = new ViewData("MainMenu", "");
 
 			}

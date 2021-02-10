@@ -13,6 +13,8 @@ public class ApplicationModel implements ModelInterface{
 
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE Application SET StatusType = 2\n" +
+                "WHERE PaymentExpire  < CURRENT_TIMESTAMP \n");
         sql.append(" WITH S1 AS(SELECT ");
 
         sql.append(" A.ApplicationNumber, S.StatusType, MandatoryFlag, ExpireDate , ApplicationDate,\n" +

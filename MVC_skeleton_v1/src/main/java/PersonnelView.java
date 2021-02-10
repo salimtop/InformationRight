@@ -45,7 +45,7 @@ public class PersonnelView implements ViewInterface{
         if (! parameters.containsKey("institutionFlag")) {
             personnelName = getString("Enter personnel name :", true);
             if (personnelName == null)
-                return new ViewData("Login", "login.gui");
+                return new ViewData("Screen", "screen.gui");
 
             personnelSurname = getString("Enter personnel surname :", false);
             personnelTitle = getString("Enter personnel title :", false);

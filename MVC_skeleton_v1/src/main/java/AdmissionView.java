@@ -140,7 +140,7 @@ public class AdmissionView implements ViewInterface {
     private ViewData respondApplication(ModelData modelData) throws Exception {
         Application application = getAssignedApplication(modelData);
         if(application == null)
-            new ViewData("Admission","listAssigned");
+            return new ViewData("Admission","listAssigned");
 
         System.out.println("1 - Change Status");
         System.out.println("2 - Enter Respond");
@@ -164,7 +164,7 @@ public class AdmissionView implements ViewInterface {
         Integer applicationNumber;
         boolean isContain = false;
         do{
-            applicationNumber = getInteger("Enter application number : ",false);
+            applicationNumber = getInteger("Enter application number : ",true);
             if(applicationNumber == null)
                 return null;
             if(applicationList.containsKey(applicationNumber))

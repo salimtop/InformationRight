@@ -15,6 +15,8 @@ public class InquiryModel implements ModelInterface{
         StringBuilder sql = new StringBuilder();
 
         if(viewParameters.get("inquiryType").equals("applicationDetails")) {
+            sql.append("UPDATE Application SET StatusType = 2\n" +
+                            "WHERE PaymentExpire  < CURRENT_TIMESTAMP");
             sql.append(" SELECT ");
             sql.append("	A.ApplicationNumber, ST.StatusType, A.MandatoryFlag,\n" +
                     "    DT.DeliveryType, A.ApplicationDate, A.ExpireDate,\n" +
