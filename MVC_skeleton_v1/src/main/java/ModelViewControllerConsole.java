@@ -25,6 +25,8 @@ public class ModelViewControllerConsole {
 		router.put("Respond",new Controller(new RespondView(),new RespondModel()));
 		router.put("Inquiry",new Controller(new InquiryView(), new InquiryModel()));
 		router.put("Report",new Controller(new ReportView(), new ReportModel()));
+		router.put("Personnel",new Controller(new PersonnelView(), new PersonnelModel()));
+		router.put("UserInformation",new Controller(new UserInformationView(), new UserInformationModel()));
 
 		ViewData viewData = new ViewData("MainMenu", "");
 		do {
@@ -42,8 +44,8 @@ public class ModelViewControllerConsole {
 				System.out.println("-------------------------------------------------");
 				System.out.println();
 			} catch (Exception e) {
-				//e.printStackTrace();
-				System.out.println("Error occurred: "+e);
+				e.printStackTrace();
+				//System.out.println("Error occurred: "+e);
 				viewData = new ViewData("MainMenu", "");
 
 			}

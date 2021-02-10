@@ -15,10 +15,10 @@ public class LoginModel implements ModelInterface {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append("	Username, Password,Name,Surname, Title,InstitutionName,InstitutionId, U.PersonalId, LastLogin  ");
+        sql.append("	Username, Password,Name,Surname, Title,InstitutionName,InstitutionId, U.PersonnelId, LastLogin  ");
         sql.append(" FROM UserInformation AS U "+
-                    "INNER JOIN Personal AS P "+
-                    "ON U.PersonalId = P.PersonalId "+
+                    "INNER JOIN Personnel AS P "+
+                    "ON U.PersonnelId = P.PersonnelId "+
                     "INNER JOIN Institution AS I " +
                     "ON P.Department = I.InstitutionId \n");
 

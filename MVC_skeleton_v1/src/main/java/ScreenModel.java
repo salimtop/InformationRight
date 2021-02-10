@@ -18,9 +18,9 @@ public class ScreenModel implements ModelInterface {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append("	ScreenType ");
-        sql.append(" FROM Authority AS A INNER JOIN Screen AS S " +
-                "ON A.ScreenNum = S.ScreenNum ");
+        sql.append("	S.ScreenType ");
+        sql.append(" FROM Authority AS A INNER JOIN ScreenType AS S " +
+                "ON A.ScreenType = S.ScreenTypeId ");
 
         List<Map.Entry<String, Object>> whereParameterList = DatabaseUtilities.createWhereParameterList(whereParameters);
         sql.append(DatabaseUtilities.prepareWhereStatement(whereParameterList));

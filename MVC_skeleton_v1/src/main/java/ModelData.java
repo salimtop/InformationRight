@@ -6,8 +6,9 @@ public class ModelData {
 	final String modelName;
 	final ResultSet resultSet;
 	final Map<String,Object> transferData;
-	
-	ModelData() {
+	public Object getParameters;
+
+    ModelData() {
 		this.modelName = null;
 		this.resultSet = null;
 		this.transferData = null;

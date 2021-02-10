@@ -11,6 +11,9 @@ public class Screen {
             case "showApplication" : return "Show Application";
             case "showInstitution" : return "Show Institutions";
             case "seeReport" : return "See Report";
+            case "addPersonnel" : return "Add Personnel";
+            case "listPersonnel" : return "Personnel List";
+            case "addUser" : return "Create New User";
             case "logout" : return "Log out";
             case "Quit" : return "Quit";
         }

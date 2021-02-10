@@ -39,7 +39,7 @@ public class LoginView implements ViewInterface{
                 String department = resultSet.getString("InstitutionName");
                 Integer departmentId = resultSet.getInt("InstitutionId");
                 String lastLogin = resultSet.getTimestamp("LastLogin").toString();
-                Integer personalId = resultSet.getInt("PersonalId");
+                Integer personalId = resultSet.getInt("PersonnelId");
 
                 // Display values
                 if(username != null || password != null){

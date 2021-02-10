@@ -20,12 +20,17 @@ public class ScreenView implements ViewInterface {
             case "newApplication" : return new ViewData("Applier","registerApplier",modelData.transferData);
             case "listAssigned" : return new ViewData("Admission","listAssigned");
             case "listAllApplication" : return new ViewData("Application","listAllApplication",modelData.transferData);
+
             case "showApplication" : return new ViewData("ApplicationForm","showApplicationForm");
             case "showInstitution" : //transfer data contains arrive point of data
                 return new ViewData("Institution","select",transferData == null ? new HashMap<>() : transferData );
+
             case "admitApplication" : return new ViewData("Admission","admit", (Map<String, Object>) modelData.transferData);
             case "seeReport" : return new ViewData("Report","select");
+            case "addPersonnel" :  return new ViewData("Personnel","addPersonnel");
 
+            case "listPersonnel" : return new ViewData("Personnel", "select",transferData == null ? new HashMap<>() : transferData);
+            case "addUser" : return new ViewData("UserInformation","addUser");
         }
 
 
