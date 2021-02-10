@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class UserInformationModel implements ModelInterface{
@@ -27,16 +28,26 @@ public class UserInformationModel implements ModelInterface{
     public Integer insert(Map<String, Object> insertParameters) {
         // construct SQL statement
         StringBuilder sql = new StringBuilder();
-        sql.append(" INSERT INTO UserInformation  (PersonnelId,Username,Password,LastLogin) \n"+
-                "VALUES (?,?,?,CONVERT(smalldatetime,CURRENT_TIMESTAMP)) " );
+        sql.append(" BEGIN TRAN INSERT INTO UserInformation  (PersonnelId,Username,Password,LastLogin) \n"+
+                "VALUES (?,?,?,CONVERT(smalldatetime,CURRENT_TIMESTAMP)) \n" );
 
+
+
+        //Add authorities
+        if(insertParameters.containsKey("authority")){
+            ArrayList<Integer> authorities = (ArrayList<Integer>) insertParameters.get("authority");
+
+            for(int i = 0; i < authorities.size();i++){
+                sql.append("INSERT INTO Authority (Username,ScreenType) \n"+
+                        "VALUES('"+insertParameters.get("username")+"',"+authorities.get(i)+") \n");
+            }
+        }
 
         if(DatabaseUtilities.monitoring)
             System.out.println(sql.toString());
 
-
+        sql.append("COMMIT");
         // execute constructed SQL statement
-
         //Insert
         Connection connection = null;
         Integer response;

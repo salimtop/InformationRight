@@ -84,6 +84,12 @@ public class UserInformationView implements ViewInterface {
     private ViewData addUserGUI(ModelData modelData) throws ParseException {
         Map<String,Object> parameters = modelData.transferData == null ? new HashMap() : modelData.transferData;
 
+        if(TypeTable.types == null){
+            parameters.put("redirectFunction","UserInformation");
+            parameters.put("redirectOperation","addUser");
+            return new ViewData("TypeTable","loadChoice",parameters);
+        }
+
         if( ! parameters.containsKey("listNonUserFlag")){
             parameters.put("redirectFunction","UserInformation");
             parameters.put("redirectOperation","addUser");
@@ -115,9 +121,37 @@ public class UserInformationView implements ViewInterface {
 
         Map<String,Object> insertParameters = new HashMap<String,Object>();
 
+        String authorityChoice = getString("Press 'A' to add authority. (Enter to continue) :",true);
+
+        if(authorityChoice.equalsIgnoreCase("A")){
+            ArrayList<Integer> authority = giveAuthority();
+            insertParameters.put("authority",authority);
+        }
+
         insertParameters.put("personnelId",personnelId);
         insertParameters.put("username",username);
         insertParameters.put("password",password);
         return new ViewData("UserInformation","insert",insertParameters);
     }
+
+
+    private ArrayList<Integer> giveAuthority() throws ParseException {
+        ArrayList<Integer> authority = new ArrayList<Integer>();
+        Map<Integer, Object> screenList = TypeTable.showType("ScreenType");
+        Integer choice;
+        String add = "A";
+        do{
+            choice = getInteger("Enter authority number :",false);
+            if(screenList.containsKey(choice)){
+                authority.add(choice);
+                add = getString("Added! Press 'A' to add more : ",true);
+            }
+            else{
+                choice = getInteger("Wrong!, Enter authority number :",false);
+            }
+        }while(add != null && add.equalsIgnoreCase("A"));
+
+        return authority;
+    }
+
 }
